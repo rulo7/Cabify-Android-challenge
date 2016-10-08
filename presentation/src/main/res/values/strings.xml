@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Cabify Android challenge</string>
+    <string name="necessary_multiple_permissions">This action needs permissions</string>
+</resources>

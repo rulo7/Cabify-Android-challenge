@@ -1,0 +1,15 @@
+apply plugin: 'java'
+apply plugin: 'me.tatarka.retrolambda'
+
+retrolambda {
+    oldJdk System.getenv("JAVA8_HOME")
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    // rxJava
+    compile rootProject.ext.dependencies_sources.rx_java_library
+    // Lombok (important install plugin into Android Studio!)
+    compile rootProject.ext.dependencies_sources.lombok_library
+}

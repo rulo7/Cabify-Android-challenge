@@ -1,0 +1,1 @@
+include ':presentation', ':domain', ':presentation', ':data', ':default_android_dependencies'

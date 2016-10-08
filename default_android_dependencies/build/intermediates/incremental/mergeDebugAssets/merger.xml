@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="D:\Projects\android\CabifyAndroidchallenge\default_android_dependencies\src\main\assets"/><source path="D:\Projects\android\CabifyAndroidchallenge\default_android_dependencies\build\generated\assets\shaders\debug"/></dataSet><dataSet config="debug"><source path="D:\Projects\android\CabifyAndroidchallenge\default_android_dependencies\src\debug\assets"/></dataSet></merger>
