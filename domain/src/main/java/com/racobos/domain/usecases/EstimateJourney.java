@@ -9,14 +9,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import rx.Observable;
 
 /**
  * Created by rulo7 on 09/10/2016.
  */
-@Singleton
 public class EstimateJourney extends UseCase {
 
     private CabifyApiRepository cabifyApiRepository;

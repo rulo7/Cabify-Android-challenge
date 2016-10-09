@@ -44,10 +44,9 @@ public class ApplicationModule {
         return uiThread;
     }
 
-
     @Provides
     @Singleton
-    CabifyApiRepository provideCabifRepository(CabifyApiDataRepository cabifyApiDataRepository) {
+    CabifyApiRepository provideCabifyRepository(CabifyApiDataRepository cabifyApiDataRepository) {
         return cabifyApiDataRepository;
     }
 
