@@ -24,7 +24,7 @@ android {
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
-            buildConfigField "String", "GOOGLE_API_KEY", '"AIzaSyBn23hn4eg15ajts1s98y_qvhok5Tebhik"'
+            resValue "string", "GOOGLE_API_KEY", '"AIzaSyBn23hn4eg15ajts1s98y_qvhok5Tebhik"'
         }
         release {
             minifyEnabled true
@@ -37,7 +37,10 @@ android {
         sourceCompatibility 1.8
     }
 }
-
+repositories {
+    // IcePick repository
+    maven { url "https://clojars.org/repo/" }
+}
 dependencies {
     compile project(':default_android_dependencies')
     compile project(':domain')
@@ -57,4 +60,7 @@ dependencies {
     compile rootProject.ext.dependencies_sources.google_play_services
     // Karumi Dexter
     compile rootProject.ext.dependencies_sources.dexter_library
+    // IcePick
+    compile rootProject.ext.dependencies_sources.icepick_library
+    provided rootProject.ext.dependencies_sources.icepick_processor
 }

@@ -7,7 +7,16 @@ import android.support.annotation.CallSuper;
  */
 
 public abstract class BasePresenter<T extends BaseView> {
-    public abstract T getView();
+
+    private T view;
+
+    protected T getView() {
+        return view;
+    }
+
+    public void setView(T view) {
+        this.view = view;
+    }
 
     @CallSuper
     public void onStart() {
