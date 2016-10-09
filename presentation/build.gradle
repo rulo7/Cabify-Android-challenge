@@ -44,12 +44,12 @@ repositories {
 dependencies {
     compile project(':default_android_dependencies')
     compile project(':domain')
+    compile project(path: ':data')
     // Default
     compile 'com.android.support:appcompat-v7:24.2.1'
     // Dagger 2
     apt rootProject.ext.dependencies_sources.dagger_compiler
     compile rootProject.ext.dependencies_sources.dagger_library
-    provided rootProject.ext.dependencies_sources.javax_annotation
     // composer MARA
     compile rootProject.ext.dependencies_sources.composer_mara_library
     apt rootProject.ext.dependencies_sources.composer_mara_compiler

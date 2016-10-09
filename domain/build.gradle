@@ -5,6 +5,10 @@ retrolambda {
     oldJdk System.getenv("JAVA8_HOME")
 }
 
+configurations {
+    provided
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
@@ -12,4 +16,8 @@ dependencies {
     compile rootProject.ext.dependencies_sources.rx_java_library
     // Lombok (important install plugin into Android Studio!)
     compile rootProject.ext.dependencies_sources.lombok_library
+    // Javax annotations
+    provided rootProject.ext.dependencies_sources.javax_annotation
+    // Javax Inject
+    compile rootProject.ext.dependencies_sources.javax_inject
 }

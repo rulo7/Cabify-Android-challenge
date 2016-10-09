@@ -2,6 +2,9 @@ package com.racobos.presentation.di.components;
 
 import android.content.Context;
 
+import com.racobos.domain.executors.PostExecutionThread;
+import com.racobos.domain.executors.ThreadExecutor;
+import com.racobos.domain.repositories.CabifyApiRepository;
 import com.racobos.presentation.di.modules.ApplicationModule;
 import com.racobos.presentation.navigation.Navigator;
 import com.racobos.presentation.ui.bases.android.BaseApplication;
@@ -21,4 +24,10 @@ public interface ApplicationComponent {
     Context getContext();
 
     Navigator navigator();
+
+    ThreadExecutor threadExecutor();
+
+    PostExecutionThread postExecutionThread();
+
+    CabifyApiRepository cabifyApiRepository();
 }

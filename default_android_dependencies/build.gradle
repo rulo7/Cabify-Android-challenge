@@ -22,6 +22,12 @@ dependencies {
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
 
+    // Javax annotations
+    provided rootProject.ext.dependencies_sources.javax_annotation
+
+    // Javax Inject
+    compile rootProject.ext.dependencies_sources.javax_inject
+
     // rx
     compile rootProject.ext.dependencies_sources.rx_android_library
     compile rootProject.ext.dependencies_sources.rx_java_library
