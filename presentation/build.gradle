@@ -3,10 +3,10 @@ apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+    compileSdkVersion globalConfiguration.getAt("androidCompileSdkVersion")
+    buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
     defaultConfig {
-        def globalConfiguration = rootProject.extensions.getByName("ext")
         applicationId globalConfiguration.getAt("androidApplicationId")
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
@@ -53,6 +53,8 @@ dependencies {
 
     // Support library
     compile rootProject.ext.dependencies_sources.android_support_library
+    compile rootProject.ext.dependencies_sources.android_cardview
+    compile rootProject.ext.dependencies_sources.android_recyclerview
 
     // Javax annotations
     provided rootProject.ext.dependencies_sources.javax_annotation
@@ -66,9 +68,6 @@ dependencies {
 
     // Timber
     compile rootProject.ext.dependencies_sources.timber_library
-
-    // Default
-    compile 'com.android.support:appcompat-v7:24.2.1'
 
     // Dagger 2
     apt rootProject.ext.dependencies_sources.dagger_compiler

@@ -4,14 +4,13 @@ apply plugin: 'me.tatarka.retrolambda'
 
 
 android {
-
     publishNonDefault true
-
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+    compileSdkVersion globalConfiguration.getAt("androidCompileSdkVersion")
+    buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
 
     defaultConfig {
-        def globalConfiguration = rootProject.extensions.getByName("ext")
+
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode globalConfiguration.getAt("androidVersionCode")
@@ -56,4 +55,8 @@ dependencies {
 
     // Timber
     compile rootProject.ext.dependencies_sources.timber_library
+
+    //Retrofit
+    compile rootProject.ext.dependencies_sources.retrofit
+    compile rootProject.ext.dependencies_sources.retrofit_converter_gson
 }

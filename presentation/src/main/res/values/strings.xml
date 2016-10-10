@@ -9,6 +9,7 @@
     <string name="destination">Destination</string>
     <string name="origin_can_not_be_empty">You have to select the origin route</string>
     <string name="destination_can_not_be_empty">You have to select the destination route</string>
+    <string name="search">Search...</string>
     <array name="position_selection">
         <item>@string/origin</item>
         <item>@string/destination</item>
