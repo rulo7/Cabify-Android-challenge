@@ -2,7 +2,7 @@ package com.racobos.presentation.di.modules;
 
 import android.content.Context;
 
-import com.racobos.data.executor.JobExecutor;
+import com.racobos.data.executors.JobExecutor;
 import com.racobos.data.repositories.CabifyApiDataRepository;
 import com.racobos.domain.executors.PostExecutionThread;
 import com.racobos.domain.executors.ThreadExecutor;
@@ -32,16 +32,17 @@ public class ApplicationModule {
         return baseApplication.getApplicationContext();
     }
 
-    @Provides
-    @Singleton
-    ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
-        return jobExecutor;
-    }
 
     @Provides
     @Singleton
     PostExecutionThread providePostExecutionThread(UIThread uiThread) {
         return uiThread;
+    }
+
+    @Provides
+    @Singleton
+    ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
+        return jobExecutor;
     }
 
     @Provides

@@ -25,9 +25,9 @@ public interface ApplicationComponent {
 
     Navigator navigator();
 
-    ThreadExecutor threadExecutor();
-
     PostExecutionThread postExecutionThread();
+
+    ThreadExecutor threadExecutor();
 
     CabifyApiRepository cabifyApiRepository();
 }

@@ -22,3 +22,4 @@
     @icepick.* <fields>;
 }
 -keepnames class * { @icepick.State *;}
+-keepattributes *Annotation*

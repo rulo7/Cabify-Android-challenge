@@ -6,12 +6,13 @@ android {
     compileSdkVersion 24
     buildToolsVersion "24.0.3"
     defaultConfig {
-        applicationId "com.racobos.cabifyandroidchallenge"
-        minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        def globalConfiguration = rootProject.extensions.getByName("ext")
+        applicationId globalConfiguration.getAt("androidApplicationId")
+        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
+        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
+        versionCode globalConfiguration.getAt("androidVersionCode")
+        versionName globalConfiguration.getAt("androidVersionName")
+        testInstrumentationRunner globalConfiguration.getAt("testInstrumentationRunner")
     }
     signingConfigs {
         debug {
@@ -31,10 +32,9 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-
     compileOptions {
-        targetCompatibility 1.8
-        sourceCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 repositories {
@@ -42,24 +42,52 @@ repositories {
     maven { url "https://clojars.org/repo/" }
 }
 dependencies {
-    compile project(':default_android_dependencies')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.dependencies_sources_tests.junit
+
     compile project(':domain')
-    compile project(path: ':data')
+    debugCompile project(path: ':data', configuration: 'debug')
+    releaseCompile project(path: ':data', configuration: 'release')
+
+    // Support library
+    compile rootProject.ext.dependencies_sources.android_support_library
+
+    // Javax annotations
+    provided rootProject.ext.dependencies_sources.javax_annotation
+
+    // rx
+    compile rootProject.ext.dependencies_sources.rx_android_library
+    compile rootProject.ext.dependencies_sources.rx_java_library
+
+    // Lombok (important install plugin into Android Studio!)
+    compile rootProject.ext.dependencies_sources.lombok_library
+
+    // Timber
+    compile rootProject.ext.dependencies_sources.timber_library
+
     // Default
     compile 'com.android.support:appcompat-v7:24.2.1'
+
     // Dagger 2
     apt rootProject.ext.dependencies_sources.dagger_compiler
     compile rootProject.ext.dependencies_sources.dagger_library
+
     // composer MARA
     compile rootProject.ext.dependencies_sources.composer_mara_library
     apt rootProject.ext.dependencies_sources.composer_mara_compiler
+
     // Butterknife
     compile rootProject.ext.dependencies_sources.butterknife_library
     apt rootProject.ext.dependencies_sources.butterknife_compiler
+
     // google maps
     compile rootProject.ext.dependencies_sources.google_play_services
+
     // Karumi Dexter
     compile rootProject.ext.dependencies_sources.dexter_library
+
     // IcePick
     compile rootProject.ext.dependencies_sources.icepick_library
     provided rootProject.ext.dependencies_sources.icepick_processor

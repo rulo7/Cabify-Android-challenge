@@ -1,21 +1,27 @@
 ext {
     dependencies_sources = [
-            dagger_compiler       : 'com.google.dagger:dagger-compiler:2.7',
-            dagger_library        : 'com.google.dagger:dagger:2.7',
-            javax_annotation      : 'javax.annotation:jsr250-api:1.0',
-            javax_inject          : 'javax.inject:javax.inject:1',
-            rx_android_library    : 'io.reactivex:rxandroid:1.2.1',
-            rx_java_library       : 'io.reactivex:rxjava:1.1.6',
-            composer_mara_library : 'com.txusballesteros:mara:0.1',
-            composer_mara_compiler: 'com.txusballesteros:mara-compiler:0.1',
-            lombok_library        : 'org.projectlombok:lombok:1.12.6',
-            butterknife_library   : 'com.jakewharton:butterknife:8.4.0',
-            butterknife_compiler  : 'com.jakewharton:butterknife-compiler:8.4.0',
-            timber_library        : 'com.jakewharton.timber:timber:4.3.1',
-            retrofit_library      : 'com.squareup.retrofit2:retrofit:2.1.0',
-            google_play_services  : 'com.google.android.gms:play-services:9.6.1',
-            dexter_library        : 'com.karumi:dexter:2.3.1',
-            icepick_library       : 'frankiesardo:icepick:3.2.0',
-            icepick_processor     : 'frankiesardo:icepick-processor:3.2.0',
+            dagger_compiler        : 'com.google.dagger:dagger-compiler:2.7',
+            dagger_library         : 'com.google.dagger:dagger:2.7',
+            javax_annotation       : 'javax.annotation:jsr250-api:1.0',
+            javax_inject           : 'javax.inject:javax.inject:1',
+            rx_android_library     : 'io.reactivex:rxandroid:1.2.1',
+            rx_java_library        : 'io.reactivex:rxjava:1.1.6',
+            composer_mara_library  : 'com.txusballesteros:mara:0.1',
+            composer_mara_compiler : 'com.txusballesteros:mara-compiler:0.1',
+            lombok_library         : 'org.projectlombok:lombok:1.12.6',
+            butterknife_library    : 'com.jakewharton:butterknife:8.4.0',
+            butterknife_compiler   : 'com.jakewharton:butterknife-compiler:8.4.0',
+            timber_library         : 'com.jakewharton.timber:timber:4.3.1',
+            retrofit_library       : 'com.squareup.retrofit2:retrofit:2.1.0',
+            google_play_services   : 'com.google.android.gms:play-services:9.6.1',
+            dexter_library         : 'com.karumi:dexter:2.3.1',
+            icepick_library        : 'frankiesardo:icepick:3.2.0',
+            icepick_processor      : 'frankiesardo:icepick-processor:3.2.0',
+            android_support_library: 'com.android.support:appcompat-v7:24.2.1',
+    ]
+
+    dependencies_sources_tests = [
+            junit: 'junit:junit:4.12',
+
     ]
 }

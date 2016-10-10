@@ -12,6 +12,16 @@ buildscript {
 }
 
 allprojects {
+
+    ext {
+        androidApplicationId = packageSyntax
+        androidMinSdkVersion = 16
+        androidTargetSdkVersion = 24
+        androidVersionCode = 1
+        androidVersionName = "0.1"
+        testInstrumentationRunner = "android.support.test.runner.AndroidJUnitRunner"
+    }
+
     repositories {
         jcenter()
         mavenCentral()
