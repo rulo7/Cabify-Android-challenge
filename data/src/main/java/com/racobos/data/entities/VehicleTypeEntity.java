@@ -2,11 +2,12 @@ package com.racobos.data.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import lombok.Data;
 
 /**
  * Created by rulo7 on 11/10/2016.
  */
-
+@Data
 public class VehicleTypeEntity {
     @SerializedName("_id")
     @Expose
@@ -40,6 +41,5 @@ public class VehicleTypeEntity {
         @SerializedName("regular")
         @Expose
         public String regular;
-
     }
 }

@@ -1,9 +1,9 @@
 package com.racobos.presentation.ui.components.views.map;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.location.Geocoder;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,11 +11,10 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -25,12 +24,10 @@ import com.racobos.presentation.ui.components.views.ViewComponent;
 import com.racobos.presentation.utils.PermissionManager;
 import com.racobos.presentation.utils.ScreenSizeOperations;
 import com.txusballesteros.mara.Trait;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import lombok.Data;
 import lombok.experimental.Builder;
 
@@ -56,15 +53,16 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
     @Override
     public void initialize() {
-        if (context instanceof AppCompatActivity) {
-            AppCompatActivity rootActivity = (AppCompatActivity) context;
+        if (context instanceof Activity) {
+            Activity rootActivity = (Activity) context;
             ViewGroup holderView = (ViewGroup) rootActivity.findViewById(R.id.map_component);
             if (holderView != null) {
                 PermissionManager.requestMultiplePermissions(holderView, () -> {
                     View view = LayoutInflater.from(context).inflate(R.layout.map_component_view, holderView, false);
                     setupViews(view);
                     holderView.addView(view);
-                    SupportMapFragment mapFragment = (SupportMapFragment) rootActivity.getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+                    MapFragment mapFragment =
+                            (MapFragment) rootActivity.getFragmentManager().findFragmentById(R.id.map_fragment);
                     mapFragment.getMapAsync(MapComponent.this);
                 }, Manifest.permission.ACCESS_FINE_LOCATION);
             }
@@ -73,14 +71,12 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
     private void setupViews(View view) {
         editTextSearch = (EditText) view.findViewById(R.id.edittext_search);
-        editTextSearch.setOnEditorActionListener((v, actionId, event) ->
-                {
-                    if (actionId == EditorInfo.IME_ACTION_SEARCH && !editTextSearch.getText().toString().isEmpty()) {
-                        searchAddress(editTextSearch.getText().toString());
-                    }
-                    return false;
-                }
-        );
+        editTextSearch.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH && !editTextSearch.getText().toString().isEmpty()) {
+                searchAddress(editTextSearch.getText().toString());
+            }
+            return false;
+        });
     }
 
     private void searchAddress(String search) {
@@ -113,12 +109,12 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
                 .build();
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         if (onMapActionListener != null) {
-            googleMap.setOnMapClickListener(latLng -> onMapActionListener.onMapClick(latLng.latitude, latLng.longitude));
+            googleMap.setOnMapClickListener(
+                    latLng -> onMapActionListener.onMapClick(latLng.latitude, latLng.longitude));
             googleMap.setOnMarkerClickListener(marker -> onMapActionListener.onMarkerClick(marker.getId()));
         }
     }
@@ -126,22 +122,29 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     /**
      * Add marker to the map
      *
-     * @param lat
-     * @param lon
-     * @param title
      * @return the marker id added
      */
     public String addMarker(double lat, double lon, String title) {
         if (googleMap != null) {
             String snippet = lat + ", " + lon;
             try {
-                android.location.Address address = new Geocoder(context).getFromLocation(lat, lon, 1).get(0);
-                if (address.getMaxAddressLineIndex() > 0)
-                    snippet = address.getAddressLine(0) + ", " + address.getCountryName() + " (" + address.getLocality() + ")";
+                List<android.location.Address> addresses = new Geocoder(context).getFromLocation(lat, lon, 1);
+                if (addresses.size() > 0) {
+                    android.location.Address address = addresses.get(0);
+                    if (address.getMaxAddressLineIndex() > 0) {
+                        snippet = address.getAddressLine(0)
+                                + ", "
+                                + address.getCountryName()
+                                + " ("
+                                + address.getLocality()
+                                + ")";
+                    }
+                }
             } catch (IOException e) {
                 Log.e(getClass().getSimpleName(), e.getMessage());
             }
-            Marker marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon)).snippet(snippet).title(title));
+            Marker marker = googleMap.addMarker(
+                    new MarkerOptions().position(new LatLng(lat, lon)).snippet(snippet).title(title));
             markers.put(marker.getId(), marker);
             updateCameraPosition();
             return marker.getId();
@@ -155,7 +158,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-        int padding = ScreenSizeOperations.getPxFromDps(context, CAMERA_CENTER_PADDING); // offset from edges of the map in pixels
+        int padding = ScreenSizeOperations.getPxFromDps(context,
+                CAMERA_CENTER_PADDING); // offset from edges of the map in pixels
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
 

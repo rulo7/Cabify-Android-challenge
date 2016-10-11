@@ -10,11 +10,11 @@ android {
     buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
 
     defaultConfig {
-
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode globalConfiguration.getAt("androidVersionCode")
-
+        buildConfigField "String", "CABIFY_API_BASE_URL", '"http://test.cabify.com"'
+        buildConfigField "String", "CABIFY_API_TOKEN", '"6o_FrppOEQ5RrCkBOEKaBM-puJleMKrRn5nW_cy7H9Y"'
     }
     buildTypes {
         release {
@@ -59,4 +59,5 @@ dependencies {
     //Retrofit
     compile rootProject.ext.dependencies_sources.retrofit
     compile rootProject.ext.dependencies_sources.retrofit_converter_gson
+    compile rootProject.ext.dependencies_sources.okhttp_loggin_interceptor
 }

@@ -13,6 +13,8 @@ android {
         versionCode globalConfiguration.getAt("androidVersionCode")
         versionName globalConfiguration.getAt("androidVersionName")
         testInstrumentationRunner globalConfiguration.getAt("testInstrumentationRunner")
+
+        multiDexEnabled true
     }
     signingConfigs {
         debug {
