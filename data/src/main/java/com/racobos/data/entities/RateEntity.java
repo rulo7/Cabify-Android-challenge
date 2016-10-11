@@ -11,32 +11,40 @@ import lombok.Data;
 public class RateEntity {
     @SerializedName("vehicle_type")
     @Expose
-    public VehicleTypeEntity vehicleType;
+    private VehicleTypeEntity vehicleType;
     @SerializedName("total_price")
     @Expose
-    public Integer totalPrice;
+    private Double totalPrice;
     @SerializedName("formatted_price")
     @Expose
-    public String formattedPrice;
+    private String formattedPrice;
     @SerializedName("currency")
     @Expose
-    public String currency;
+    private String currency;
     @SerializedName("currency_symbol")
     @Expose
-    public String currencySymbol;
+    private String currencySymbol;
     @SerializedName("eta")
     @Expose
-    public Eta eta;
+    private Eta eta;
 
+    public void setEta(Integer min, Integer max, String formatted) {
+        eta = new Eta();
+        eta.setMin(min);
+        eta.setMax(max);
+        eta.setFormatted(formatted);
+    }
+
+    @Data
     public class Eta {
         @SerializedName("min")
         @Expose
-        public Integer min;
+        private Integer min;
         @SerializedName("max")
         @Expose
-        public Integer max;
+        private Integer max;
         @SerializedName("formatted")
         @Expose
-        public String formatted;
+        private String formatted;
     }
 }

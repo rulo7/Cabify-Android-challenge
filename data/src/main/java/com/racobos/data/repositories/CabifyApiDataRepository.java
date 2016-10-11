@@ -1,14 +1,14 @@
 package com.racobos.data.repositories;
 
+import com.racobos.data.mappers.RateMapper;
+import com.racobos.data.mappers.StopMapper;
+import com.racobos.data.net.CabifyApiServices;
 import com.racobos.domain.models.JourneyRate;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.repositories.CabifyApiRepository;
-
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import rx.Observable;
 
 /**
@@ -17,13 +17,19 @@ import rx.Observable;
 @Singleton
 public class CabifyApiDataRepository implements CabifyApiRepository {
 
+    private StopMapper stopMapper;
+    private RateMapper rateMapper;
+
     @Inject
-    public CabifyApiDataRepository() {
-        //TODO add datasources and mappers
+    public CabifyApiDataRepository(StopMapper stopMapper, RateMapper rateMapper) {
+        this.stopMapper = stopMapper;
+        this.rateMapper = rateMapper;
     }
 
     @Override
-    public Observable<List<JourneyRate>> estimateJourney(List<StopStation> stops) {
-        return null;
+    public Observable<List<JourneyRate>> estimateJourney(List<StopStation> stops, String startsAt) {
+        return CabifyApiServices.getApi()
+                .estimateRate(stopMapper.mapModelToEntity(stops), startsAt)
+                .map(rateEntities -> rateMapper.mapEntityToModel(rateEntities));
     }
 }

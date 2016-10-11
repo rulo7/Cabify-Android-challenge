@@ -11,35 +11,36 @@ import lombok.Data;
 public class VehicleTypeEntity {
     @SerializedName("_id")
     @Expose
-    public String id;
+    private String id;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("short_name")
     @Expose
-    public String shortName;
+    private String shortName;
     @SerializedName("description")
     @Expose
-    public String description;
+    private String description;
     @SerializedName("icons")
     @Expose
-    public Icons icons;
+    private Icons icons;
     @SerializedName("reserved_only")
     @Expose
-    public Boolean reservedOnly;
+    private Boolean reservedOnly;
     @SerializedName("asap_only")
     @Expose
-    public Boolean asapOnly;
+    private Boolean asapOnly;
     @SerializedName("currency")
     @Expose
-    public String currency;
+    private String currency;
     @SerializedName("icon")
     @Expose
-    public String icon;
+    private String icon;
 
+    @Data
     public class Icons {
         @SerializedName("regular")
         @Expose
-        public String regular;
+        private String regular;
     }
 }

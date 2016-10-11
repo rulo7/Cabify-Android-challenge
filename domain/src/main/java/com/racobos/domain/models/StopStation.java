@@ -1,7 +1,6 @@
 package com.racobos.domain.models;
 
 import java.io.Serializable;
-
 import lombok.Data;
 
 /**
@@ -9,10 +8,9 @@ import lombok.Data;
  */
 @Data
 public class StopStation implements Serializable {
-    private String lat;
-    private String lon;
+    private Double lat;
+    private Double lon;
     private String address;
     private String city;
     private String country;
-    private String startAt;
 }

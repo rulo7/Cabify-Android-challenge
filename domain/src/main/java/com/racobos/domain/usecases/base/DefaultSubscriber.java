@@ -1,4 +1,4 @@
-package com.racobos.domain.usecases;
+package com.racobos.domain.usecases.base;
 /**
  * Copyright (C) 2015 Fernando Cejas Open Source Project
  * <p>

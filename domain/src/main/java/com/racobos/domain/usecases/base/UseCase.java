@@ -1,4 +1,4 @@
-package com.racobos.domain.usecases;
+package com.racobos.domain.usecases.base;
 /**
  * Copyright (C) 2015 Fernando Cejas Open Source Project
  * <p>
@@ -17,7 +17,6 @@ package com.racobos.domain.usecases;
 
 import com.racobos.domain.executors.PostExecutionThread;
 import com.racobos.domain.executors.ThreadExecutor;
-
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;

@@ -12,20 +12,20 @@ import lombok.Data;
 public class StopEntity {
     @SerializedName("loc")
     @Expose
-    public List<Double> loc;
+    private List<Double> loc;
     @SerializedName("name")
     @Expose
-    public String name;
+    private String name;
     @SerializedName("addr")
     @Expose
-    public String addr;
+    private String addr;
     @SerializedName("num")
     @Expose
-    public String num;
+    private String num;
     @SerializedName("city")
     @Expose
-    public String city;
+    private String city;
     @SerializedName("country")
     @Expose
-    public String country;
+    private String country;
 }

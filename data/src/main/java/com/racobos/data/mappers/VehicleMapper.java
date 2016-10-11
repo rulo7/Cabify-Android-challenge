@@ -17,11 +17,35 @@ public class VehicleMapper extends Mapper<VehicleTypeEntity, Vehicle> {
 
     @Override
     public VehicleTypeEntity mapModelToEntity(Vehicle model) {
-        return null;
+        if (model == null) {
+            return null;
+        }
+        VehicleTypeEntity vehicleTypeEntity = new VehicleTypeEntity();
+        vehicleTypeEntity.setName(model.getName());
+        vehicleTypeEntity.setAsapOnly(model.getAsapOnly());
+        vehicleTypeEntity.setDescription(model.getDescription());
+        vehicleTypeEntity.setIcon(model.getImage());
+        vehicleTypeEntity.setId(model.getId());
+        vehicleTypeEntity.setReservedOnly(model.getReservedOnly());
+        vehicleTypeEntity.setShortName(model.getShortName());
+        return vehicleTypeEntity;
     }
 
     @Override
     public Vehicle mapEntityToModel(VehicleTypeEntity entity) {
-        return null;
+        if (entity == null) {
+            return null;
+        }
+        Vehicle vehicle = new Vehicle();
+        vehicle.setShortName(entity.getShortName());
+        vehicle.setReservedOnly(entity.getReservedOnly());
+        vehicle.setId(entity.getId());
+        vehicle.setAsapOnly(entity.getAsapOnly());
+        vehicle.setDescription(entity.getDescription());
+        if (entity.getIcons() != null) {
+            vehicle.setImage(entity.getIcons().getRegular());
+        }
+        vehicle.setName(entity.getName());
+        return vehicle;
     }
 }
