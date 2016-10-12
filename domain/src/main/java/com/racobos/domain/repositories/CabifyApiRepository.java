@@ -2,7 +2,9 @@ package com.racobos.domain.repositories;
 
 import com.racobos.domain.models.JourneyRate;
 import com.racobos.domain.models.StopStation;
+
 import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -10,5 +12,5 @@ import rx.Observable;
  */
 
 public interface CabifyApiRepository {
-    Observable<List<JourneyRate>> estimateJourney(List<StopStation> stops, String startsAt);
+    Observable<List<JourneyRate>> estimateJourney(List<StopStation> stops, Long startsAt);
 }

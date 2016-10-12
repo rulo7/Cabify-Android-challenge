@@ -10,6 +10,10 @@
     <string name="origin_can_not_be_empty">You have to select the origin route</string>
     <string name="destination_can_not_be_empty">You have to select the destination route</string>
     <string name="search">Search...</string>
+    <string name="estimate">Estimate</string>
+    <string name="starts_at">Starts at</string>
+    <string name="invalid_selected_time">The selected date and time is invalid</string>
+    <string name="default_error_message">Ups!, we are sorry, something went wrong</string>
     <array name="position_selection">
         <item>@string/origin</item>
         <item>@string/destination</item>

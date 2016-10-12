@@ -1,19 +1,29 @@
 package com.racobos.presentation.ui.ratecalculator;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.racobos.domain.R;
+import com.racobos.domain.models.JourneyRate;
+import com.racobos.presentation.navigation.Navigator;
 import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
 import com.racobos.presentation.ui.components.views.map.MapComponent;
 
+import java.util.Calendar;
+import java.util.List;
+
 import javax.inject.Inject;
 
-import icepick.State;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by rulo7 on 08/10/2016.
@@ -25,10 +35,13 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     @Presenter
     RateCalculatorPresenter rateCalculatorPresenter;
 
-    @State
+    @Inject
+    Navigator navigator;
+
     String originMarkerId;
-    @State
     String destinationMarkerId;
+    @BindView(R.id.submit)
+    TextView submit;
 
     private Mara_RateCalculatorComposer composer;
 
@@ -40,8 +53,9 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rate_calculator);
+        ButterKnife.bind(this);
+        setupComponents();
         if (savedInstanceState == null) {
-            setupComponents();
             showInformationDialog();
         }
     }
@@ -49,7 +63,6 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     private void setupComponents() {
         composer = new Mara_RateCalculatorComposer.Builder().setAppCompatActivity(this).setRootView(findViewById(android.R.id.content)).setOnMapActionListener(this).build();
         composer.initialize();
-        composer.enableHomeAsUp();
         composer.hideProgress();
     }
 
@@ -96,16 +109,6 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     }
 
     @Override
-    public void showErrorEmptyOriginDialog() {
-        Toast.makeText(this, R.string.origin_can_not_be_empty, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void showErrorEmptyDestinationDialog() {
-        Toast.makeText(this, R.string.destination_can_not_be_empty, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
     public void showProgress() {
         composer.showProgress();
     }
@@ -113,5 +116,70 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     @Override
     public void hideProgress() {
         composer.hideProgress();
+    }
+
+    @Override
+    public void showSubmitMessage() {
+        submit.setText(R.string.estimate);
+    }
+
+    @Override
+    public void showSubmitOriginRequiredMessage() {
+        submit.setText(R.string.origin_can_not_be_empty);
+    }
+
+    @Override
+    public void showSubmitDestinationRequiredMessage() {
+        submit.setText(R.string.destination_can_not_be_empty);
+    }
+
+    @Override
+    public void requestDateTime(OnRequestDateTimeListener onRequestDateTimeListener) {
+        Calendar currentCalendar = Calendar.getInstance();
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
+                Calendar selectedDateCalendar = Calendar.getInstance();
+                selectedDateCalendar.set(Calendar.YEAR, year);
+                selectedDateCalendar.set(Calendar.MONTH, month);
+                selectedDateCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                selectedDateCalendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                selectedDateCalendar.set(Calendar.MINUTE, minute);
+                onRequestDateTimeListener.onDateTimeResponse(selectedDateCalendar.getTimeInMillis());
+            }, currentCalendar.get(Calendar.HOUR_OF_DAY), currentCalendar.get(Calendar.MINUTE), true);
+            timePickerDialog.setTitle(R.string.starts_at);
+            timePickerDialog.show();
+        }, currentCalendar.get(Calendar.YEAR), currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.DAY_OF_MONTH));
+        datePickerDialog.setTitle(R.string.starts_at);
+        datePickerDialog.show();
+    }
+
+    @Override
+    public void showErrorDateSelected() {
+        Toast.makeText(this, R.string.invalid_selected_time, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void setDestination(Double lat, Double lon) {
+        composer.addMarker(lat, lon, getString(R.string.destination), null);
+    }
+
+    @Override
+    public void setOrigin(Double lat, Double lon) {
+        composer.addMarker(lat, lon, getString(R.string.origin), null);
+    }
+
+    @Override
+    public void notifySomethingWentWrong() {
+        Toast.makeText(this, R.string.default_error_message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void navigateToJourneyRatesList(List<JourneyRate> journeyRates) {
+        navigator.navigateToRateList(journeyRates, this);
+    }
+
+    @OnClick(R.id.submit)
+    public void submit() {
+        rateCalculatorPresenter.submit();
     }
 }

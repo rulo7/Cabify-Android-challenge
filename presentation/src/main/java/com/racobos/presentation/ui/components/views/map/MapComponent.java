@@ -111,8 +111,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
                             onMapActionListener.onSearch(mapGoogleAddress(places.get(0)));
                         }
                         places.release();
-                        autocompleteTextSearch.clearFocus();
                         hideKeyBoard();
+                        autocompleteTextSearch.clearFocus();
                     }
                 });
             }
@@ -127,8 +127,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
                     iconSearch.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
                     iconSearch.setOnClickListener(v -> {
                         autocompleteTextSearch.setText(null);
-                        autocompleteTextSearch.clearFocus();
                         hideKeyBoard();
+                        autocompleteTextSearch.clearFocus();
                     });
                 }
             }

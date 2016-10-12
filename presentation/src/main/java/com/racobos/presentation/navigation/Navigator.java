@@ -2,7 +2,10 @@ package com.racobos.presentation.navigation;
 
 import android.app.Activity;
 
+import com.racobos.domain.models.JourneyRate;
 import com.racobos.presentation.ui.ratecalculator.RateCalculatorActivity;
+
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,5 +22,9 @@ public class Navigator {
 
     public void navigateToRateCalculator(Activity activity) {
         activity.startActivity(RateCalculatorActivity.getCallingIntent(activity));
+    }
+
+    public void navigateToRateList(List<JourneyRate> journeyRates, Activity activity) {
+
     }
 }
