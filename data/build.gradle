@@ -59,5 +59,6 @@ dependencies {
     //Retrofit
     compile rootProject.ext.dependencies_sources.retrofit
     compile rootProject.ext.dependencies_sources.retrofit_converter_gson
+    compile rootProject.ext.dependencies_sources.retrofit_adapter_rxjava
     compile rootProject.ext.dependencies_sources.okhttp_loggin_interceptor
 }
