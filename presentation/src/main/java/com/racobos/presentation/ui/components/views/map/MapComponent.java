@@ -1,16 +1,28 @@
 package com.racobos.presentation.ui.components.views.map;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.location.Geocoder;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AutoCompleteTextView;
+import android.widget.ImageView;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.location.places.AutocompletePrediction;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.PlaceBuffer;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -24,10 +36,11 @@ import com.racobos.presentation.ui.components.views.ViewComponent;
 import com.racobos.presentation.utils.PermissionManager;
 import com.racobos.presentation.utils.ScreenSizeOperations;
 import com.txusballesteros.mara.Trait;
+
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import lombok.Data;
 import lombok.experimental.Builder;
 
@@ -37,32 +50,33 @@ import lombok.experimental.Builder;
 @Trait
 public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
-    private static final int CAMERA_CENTER_PADDING = 24;
-    private static final int ADDRESS_SERACH_MAX_RESULT = 12;
+    private static final int CAMERA_CENTER_PADDING = 100;
 
-    private Context context;
+    private AppCompatActivity appCompatActivity;
     private GoogleMap googleMap;
+    private GoogleApiClient googleApiClient;
+    private PlaceAutocompleteAdapter placeAutocompleteAdapter;
     private OnMapActionListener onMapActionListener;
     private HashMap<String, Marker> markers = new HashMap<>();
-    private EditText editTextSearch;
+    private AutoCompleteTextView autocompleteTextSearch;
+    private ImageView iconSearch;
 
-    public MapComponent(Context context, OnMapActionListener onMapActionListener) {
-        this.context = context;
+    public MapComponent(AppCompatActivity appCompatActivity, OnMapActionListener onMapActionListener) {
+        this.appCompatActivity = appCompatActivity;
         this.onMapActionListener = onMapActionListener;
     }
 
     @Override
     public void initialize() {
-        if (context instanceof Activity) {
-            Activity rootActivity = (Activity) context;
-            ViewGroup holderView = (ViewGroup) rootActivity.findViewById(R.id.map_component);
+        if (appCompatActivity != null) {
+            ViewGroup holderView = (ViewGroup) appCompatActivity.findViewById(R.id.map_component);
             if (holderView != null) {
                 PermissionManager.requestMultiplePermissions(holderView, () -> {
-                    View view = LayoutInflater.from(context).inflate(R.layout.map_component_view, holderView, false);
+                    View view = LayoutInflater.from(appCompatActivity).inflate(R.layout.map_component_view, holderView, false);
                     setupViews(view);
                     holderView.addView(view);
                     MapFragment mapFragment =
-                            (MapFragment) rootActivity.getFragmentManager().findFragmentById(R.id.map_fragment);
+                            (MapFragment) appCompatActivity.getFragmentManager().findFragmentById(R.id.map_fragment);
                     mapFragment.getMapAsync(MapComponent.this);
                 }, Manifest.permission.ACCESS_FINE_LOCATION);
             }
@@ -70,42 +84,87 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     }
 
     private void setupViews(View view) {
-        editTextSearch = (EditText) view.findViewById(R.id.edittext_search);
-        editTextSearch.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_SEARCH && !editTextSearch.getText().toString().isEmpty()) {
-                searchAddress(editTextSearch.getText().toString());
+        autocompleteTextSearch = (AutoCompleteTextView) view.findViewById(R.id.edittext_search);
+        iconSearch = (ImageView) view.findViewById(R.id.imageview_icon_search);
+        googleApiClient = new GoogleApiClient.Builder(appCompatActivity)
+                .enableAutoManage(appCompatActivity, connectionResult -> {
+                    autocompleteTextSearch.setVisibility(View.GONE);
+                    Log.e(getClass().getSimpleName(), "Google api client connnection failed");
+                })
+                .addApi(Places.GEO_DATA_API)
+                .build();
+        placeAutocompleteAdapter = new PlaceAutocompleteAdapter(appCompatActivity, googleApiClient, null, null);
+        autocompleteTextSearch.setAdapter(placeAutocompleteAdapter);
+        autocompleteTextSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final AutocompletePrediction item = placeAutocompleteAdapter.getItem(position);
+                final String placeId = item.getPlaceId();
+                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
+                        .getPlaceById(googleApiClient, placeId);
+                placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+                    @Override
+                    public void onResult(@NonNull PlaceBuffer places) {
+                        if (!places.getStatus().isSuccess()) {
+                            Log.e(getClass().getSimpleName(), "Place query did not complete. Error: " + places.getStatus().toString());
+                        } else if (places.getCount() > 0) {
+                            onMapActionListener.onSearch(mapGoogleAddress(places.get(0)));
+                        }
+                        places.release();
+                        autocompleteTextSearch.clearFocus();
+                        hideKeyBoard();
+                    }
+                });
             }
-            return false;
+        });
+        autocompleteTextSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().isEmpty()) {
+                    iconSearch.setImageResource(android.R.drawable.ic_menu_search);
+                    iconSearch.setOnClickListener(null);
+                } else {
+                    iconSearch.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+                    iconSearch.setOnClickListener(v -> {
+                        autocompleteTextSearch.setText(null);
+                        autocompleteTextSearch.clearFocus();
+                        hideKeyBoard();
+                    });
+                }
+            }
+
+            //<editor-fold desc="unused methods">
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+            //</editor-fold>
         });
     }
 
-    private void searchAddress(String search) {
-        Toast.makeText(context, "Searching", Toast.LENGTH_SHORT).show();
-        Geocoder geocoder = new Geocoder(context);
-        try {
-            List<android.location.Address> addresses = geocoder.getFromLocationName(search, ADDRESS_SERACH_MAX_RESULT);
-            List<Address> result = new ArrayList<>();
-            for (android.location.Address address : addresses) {
-                result.add(mapGoogleAddress(address));
-            }
-            onMapActionListener.onSearch(result);
-            editTextSearch.setText(null);
-        } catch (IOException e) {
-            Toast.makeText(context, "There are not matches with the description", Toast.LENGTH_SHORT).show();
+    private void hideKeyBoard() {
+        View view = appCompatActivity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) appCompatActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    private Address mapGoogleAddress(android.location.Address address) {
-        if (address.getMaxAddressLineIndex() <= 0) {
+    private Address mapGoogleAddress(Place place) {
+        if (place == null) {
             return null;
         }
         return Address.builder()
-                .lat(address.getLatitude())
-                .lon(address.getLongitude())
-                .title(address.getFeatureName())
-                .address(address.getAddressLine(0))
-                .city(address.getLocality())
-                .country(address.getCountryName())
+                .lat(place.getLatLng().latitude)
+                .lon(place.getLatLng().longitude)
+                .title(place.getName().toString())
+                .address(place.getAddress().toString())
+                .country(place.getLocale().getCountry())
                 .build();
     }
 
@@ -124,24 +183,26 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
      *
      * @return the marker id added
      */
-    public String addMarker(double lat, double lon, String title) {
+    public String addMarker(double lat, double lon, String title, String snippet) {
         if (googleMap != null) {
-            String snippet = lat + ", " + lon;
-            try {
-                List<android.location.Address> addresses = new Geocoder(context).getFromLocation(lat, lon, 1);
-                if (addresses.size() > 0) {
-                    android.location.Address address = addresses.get(0);
-                    if (address.getMaxAddressLineIndex() > 0) {
-                        snippet = address.getAddressLine(0)
-                                + ", "
-                                + address.getCountryName()
-                                + " ("
-                                + address.getLocality()
-                                + ")";
+            if (snippet == null) {
+                try {
+                    List<android.location.Address> addresses = new Geocoder(appCompatActivity).getFromLocation(lat, lon, 1);
+                    if (addresses.size() > 0) {
+                        android.location.Address address = addresses.get(0);
+                        if (address.getMaxAddressLineIndex() > 0) {
+                            snippet = address.getAddressLine(0);
+                            if (address.getCountryName() != null) {
+                                snippet += ", " + address.getCountryName();
+                            }
+                            if (address.getLocality() != null) {
+                                snippet += " (" + address.getLocality() + ")";
+                            }
+                        }
                     }
+                } catch (IOException e) {
+                    Log.e(getClass().getSimpleName(), e.getMessage());
                 }
-            } catch (IOException e) {
-                Log.e(getClass().getSimpleName(), e.getMessage());
             }
             Marker marker = googleMap.addMarker(
                     new MarkerOptions().position(new LatLng(lat, lon)).snippet(snippet).title(title));
@@ -158,7 +219,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
             builder.include(marker.getPosition());
         }
         LatLngBounds bounds = builder.build();
-        int padding = ScreenSizeOperations.getPxFromDps(context,
+        int padding = ScreenSizeOperations.getPxFromDps(appCompatActivity,
                 CAMERA_CENTER_PADDING); // offset from edges of the map in pixels
         googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, padding));
     }
@@ -173,7 +234,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
         boolean onMarkerClick(String id);
 
-        void onSearch(List<MapComponent.Address> addresses);
+        void onSearch(MapComponent.Address addresses);
     }
 
     @Data

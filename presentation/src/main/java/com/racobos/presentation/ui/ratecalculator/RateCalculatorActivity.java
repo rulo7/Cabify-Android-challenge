@@ -11,8 +11,6 @@ import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
 import com.racobos.presentation.ui.components.views.map.MapComponent;
 
-import java.util.List;
-
 import javax.inject.Inject;
 
 import icepick.State;
@@ -49,7 +47,7 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     }
 
     private void setupComponents() {
-        composer = new Mara_RateCalculatorComposer.Builder().setContext(this).setOnMapActionListener(this).build();
+        composer = new Mara_RateCalculatorComposer.Builder().setAppCompatActivity(this).setRootView(findViewById(android.R.id.content)).setOnMapActionListener(this).build();
         composer.initialize();
         composer.enableHomeAsUp();
         composer.hideProgress();
@@ -63,10 +61,10 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
 
     @Override
     public void onMapClick(double lat, double lng) {
-        pickORiginOrDestination(lat, lng);
+        pickORiginOrDestination(lat, lng, null);
     }
 
-    private void pickORiginOrDestination(double lat, double lng) {
+    private void pickORiginOrDestination(double lat, double lng, String snippet) {
         new AlertDialog.Builder(this).setTitle(R.string.choose_position).setItems(R.array.position_selection, (dialog, which) -> {
             String[] items = getResources().getStringArray(R.array.position_selection);
             if (items[which].equals(getString(R.string.origin))) {
@@ -74,14 +72,13 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
                 if (originMarkerId != null) {
                     composer.removeMarker(originMarkerId);
                 }
-                originMarkerId = composer.addMarker(lat, lng, getString(R.string.origin));
-
+                originMarkerId = composer.addMarker(lat, lng, getString(R.string.origin), snippet);
             } else if (items[which].equals(getString(R.string.destination))) {
                 rateCalculatorPresenter.setDestination(lat, lng);
                 if (destinationMarkerId != null) {
                     composer.removeMarker(destinationMarkerId);
                 }
-                destinationMarkerId = composer.addMarker(lat, lng, getString(R.string.destination));
+                destinationMarkerId = composer.addMarker(lat, lng, getString(R.string.destination), snippet);
             }
         }).show();
     }
@@ -92,16 +89,10 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     }
 
     @Override
-    public void onSearch(List<MapComponent.Address> addresses) {
-        String[] items = new String[addresses.size()];
-        for (int i = 0; i < addresses.size(); i++) {
-            MapComponent.Address address = addresses.get(i);
-            items[i] = address.getAddress() + ", " + address.getCountry() + " (" + address.getCity() + ")";
+    public void onSearch(MapComponent.Address address) {
+        if (address != null) {
+            pickORiginOrDestination(address.getLat(), address.getLon(), address.getAddress());
         }
-        new AlertDialog.Builder(this).setItems(items, (dialog, which) -> {
-            pickORiginOrDestination(addresses.get(which).getLat(), addresses.get(which).getLon());
-            dialog.dismiss();
-        }).setCancelable(true).show();
     }
 
     @Override

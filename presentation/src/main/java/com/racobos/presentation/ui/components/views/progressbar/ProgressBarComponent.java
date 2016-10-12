@@ -1,7 +1,5 @@
 package com.racobos.presentation.ui.components.views.progressbar;
 
-import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,20 +15,19 @@ import com.txusballesteros.mara.Trait;
 @Trait
 public class ProgressBarComponent implements ViewComponent {
 
-    private Context context;
+    private View rootView;
     private ProgressBar progressBar;
 
-    public ProgressBarComponent(Context context) {
-        this.context = context;
+    public ProgressBarComponent(View rootView) {
+        this.rootView = rootView;
     }
 
     @Override
     public void initialize() {
-        if (context instanceof AppCompatActivity) {
-            AppCompatActivity rootActivity = (AppCompatActivity) context;
-            ViewGroup holderView = (ViewGroup) rootActivity.findViewById(R.id.progress_bar_component);
+        if (rootView != null) {
+            ViewGroup holderView = (ViewGroup) rootView.findViewById(R.id.progress_bar_component);
             if (holderView != null) {
-                progressBar = (ProgressBar) LayoutInflater.from(context)
+                progressBar = (ProgressBar) LayoutInflater.from(rootView.getContext())
                         .inflate(R.layout.progress_bar_component_view, holderView, false);
                 holderView.addView(progressBar);
             }
@@ -38,14 +35,17 @@ public class ProgressBarComponent implements ViewComponent {
     }
 
     public void showProgress() {
-        progressBar.setVisibility(View.VISIBLE);
+        if (progressBar != null)
+            progressBar.setVisibility(View.VISIBLE);
     }
 
     public void hideProgress() {
-        progressBar.setVisibility(View.GONE);
+        if (progressBar != null)
+            progressBar.setVisibility(View.GONE);
     }
 
     public void invisibleProgress() {
-        progressBar.setVisibility(View.INVISIBLE);
+        if (progressBar != null)
+            progressBar.setVisibility(View.INVISIBLE);
     }
 }
