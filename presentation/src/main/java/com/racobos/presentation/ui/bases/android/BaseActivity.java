@@ -2,18 +2,15 @@ package com.racobos.presentation.ui.bases.android;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-
 import com.racobos.presentation.di.ComponentReflectionInjector;
 import com.racobos.presentation.di.components.ActivityComponent;
 import com.racobos.presentation.di.components.DaggerActivityComponent;
 import com.racobos.presentation.ui.bases.mvp.BasePresenter;
 import com.racobos.presentation.ui.bases.mvp.BaseView;
-
+import icepick.Icepick;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-
-import icepick.Icepick;
 import timber.log.Timber;
 
 /**
@@ -26,15 +23,18 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
 
     private void findPresenter() {
         for (Field field : getClass().getDeclaredFields()) {
-            if (field.getAnnotation(Presenter.class) != null)
+            if (field.getAnnotation(Presenter.class) != null) {
                 try {
+                    field.setAccessible(true);
                     BasePresenter presenter = (BasePresenter) field.get(this);
                     if (presenter != null) {
                         presenters.add(presenter);
                     }
                 } catch (IllegalAccessException e) {
-                    Timber.e(e, "The field with the annotation @Presenter has to extends from BasePresenter and cannot be private access");
+                    Timber.e(e,
+                            "The field with the annotation @Presenter has to extends from BasePresenter and cannot be private access");
                 }
+            }
         }
     }
 

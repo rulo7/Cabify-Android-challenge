@@ -8,28 +8,25 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.racobos.domain.R;
-import com.racobos.domain.models.JourneyRate;
+import com.racobos.domain.models.Journey;
 import com.racobos.presentation.navigation.Navigator;
 import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
 import com.racobos.presentation.ui.components.views.map.MapComponent;
-
 import java.util.Calendar;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by rulo7 on 08/10/2016.
  */
 
-public class RateCalculatorActivity extends BaseActivity implements RateCalculatorPresenter.RateCalculatorView, MapComponent.OnMapActionListener {
+public class RateCalculatorActivity extends BaseActivity
+        implements RateCalculatorPresenter.RateCalculatorView, MapComponent.OnMapActionListener {
 
     @Inject
     @Presenter
@@ -40,6 +37,7 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
 
     String originMarkerId;
     String destinationMarkerId;
+
     @BindView(R.id.submit)
     TextView submit;
 
@@ -61,7 +59,10 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     }
 
     private void setupComponents() {
-        composer = new Mara_RateCalculatorComposer.Builder().setAppCompatActivity(this).setRootView(findViewById(android.R.id.content)).setOnMapActionListener(this).build();
+        composer = new Mara_RateCalculatorComposer.Builder().setAppCompatActivity(this)
+                .setRootView(findViewById(android.R.id.content))
+                .setOnMapActionListener(this)
+                .build();
         composer.initialize();
         composer.hideProgress();
     }
@@ -69,31 +70,35 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     private void showInformationDialog() {
         new AlertDialog.Builder(this).setTitle(R.string.welcome_cabify_android_challenge)
                 .setMessage(R.string.calculate_rate_route_instructions)
-                .setPositiveButton(R.string.undestood, (dialog, which) -> dialog.dismiss()).setCancelable(false).show();
+                .setPositiveButton(R.string.undestood, (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 
     @Override
     public void onMapClick(double lat, double lng) {
-        pickORiginOrDestination(lat, lng, null);
+        pickOriginOrDestination(lat, lng, null);
     }
 
-    private void pickORiginOrDestination(double lat, double lng, String snippet) {
-        new AlertDialog.Builder(this).setTitle(R.string.choose_position).setItems(R.array.position_selection, (dialog, which) -> {
-            String[] items = getResources().getStringArray(R.array.position_selection);
-            if (items[which].equals(getString(R.string.origin))) {
-                rateCalculatorPresenter.setOrigin(lat, lng);
-                if (originMarkerId != null) {
-                    composer.removeMarker(originMarkerId);
-                }
-                originMarkerId = composer.addMarker(lat, lng, getString(R.string.origin), snippet);
-            } else if (items[which].equals(getString(R.string.destination))) {
-                rateCalculatorPresenter.setDestination(lat, lng);
-                if (destinationMarkerId != null) {
-                    composer.removeMarker(destinationMarkerId);
-                }
-                destinationMarkerId = composer.addMarker(lat, lng, getString(R.string.destination), snippet);
-            }
-        }).show();
+    private void pickOriginOrDestination(double lat, double lng, String snippet) {
+        new AlertDialog.Builder(this).setTitle(R.string.choose_position)
+                .setItems(R.array.position_selection, (dialog, which) -> {
+                    String[] items = getResources().getStringArray(R.array.position_selection);
+                    if (items[which].equals(getString(R.string.origin))) {
+                        rateCalculatorPresenter.setOrigin(lat, lng);
+                        if (originMarkerId != null) {
+                            composer.removeMarker(originMarkerId);
+                        }
+                        originMarkerId = composer.addMarker(lat, lng, getString(R.string.origin), snippet);
+                    } else if (items[which].equals(getString(R.string.destination))) {
+                        rateCalculatorPresenter.setDestination(lat, lng);
+                        if (destinationMarkerId != null) {
+                            composer.removeMarker(destinationMarkerId);
+                        }
+                        destinationMarkerId = composer.addMarker(lat, lng, getString(R.string.destination), snippet);
+                    }
+                })
+                .show();
     }
 
     @Override
@@ -104,7 +109,7 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     @Override
     public void onSearch(MapComponent.Address address) {
         if (address != null) {
-            pickORiginOrDestination(address.getLat(), address.getLon(), address.getAddress());
+            pickOriginOrDestination(address.getLat(), address.getLon(), address.getAddress());
         }
     }
 
@@ -148,7 +153,8 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
             }, currentCalendar.get(Calendar.HOUR_OF_DAY), currentCalendar.get(Calendar.MINUTE), true);
             timePickerDialog.setTitle(R.string.starts_at);
             timePickerDialog.show();
-        }, currentCalendar.get(Calendar.YEAR), currentCalendar.get(Calendar.MONTH), currentCalendar.get(Calendar.DAY_OF_MONTH));
+        }, currentCalendar.get(Calendar.YEAR), currentCalendar.get(Calendar.MONTH),
+                currentCalendar.get(Calendar.DAY_OF_MONTH));
         datePickerDialog.setTitle(R.string.starts_at);
         datePickerDialog.show();
     }
@@ -174,8 +180,8 @@ public class RateCalculatorActivity extends BaseActivity implements RateCalculat
     }
 
     @Override
-    public void navigateToJourneyRatesList(List<JourneyRate> journeyRates) {
-        navigator.navigateToRateList(journeyRates, this);
+    public void navigateToJourneyRatesList(List<Journey> journeys) {
+        navigator.navigateToRateList(journeys, this);
     }
 
     @OnClick(R.id.submit)

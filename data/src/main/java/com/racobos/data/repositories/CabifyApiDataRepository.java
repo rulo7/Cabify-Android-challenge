@@ -4,15 +4,13 @@ import com.racobos.data.mappers.DateMapper;
 import com.racobos.data.mappers.RateMapper;
 import com.racobos.data.mappers.StopMapper;
 import com.racobos.data.net.CabifyApiServices;
-import com.racobos.domain.models.JourneyRate;
+import com.racobos.data.net.requests.EstimateRequest;
+import com.racobos.domain.models.Journey;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.repositories.CabifyApiRepository;
-
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
 import rx.Observable;
 
 /**
@@ -33,9 +31,10 @@ public class CabifyApiDataRepository implements CabifyApiRepository {
     }
 
     @Override
-    public Observable<List<JourneyRate>> estimateJourney(List<StopStation> stops, Long startsAt) {
+    public Observable<List<Journey>> estimateJourney(List<StopStation> stops, Long startsAt) {
         return CabifyApiServices.getApi()
-                .estimateRate(stopMapper.mapModelToEntity(stops), dateMapper.getCabifyDateFortmat(startsAt))
+                .estimateRate(new EstimateRequest(stopMapper.mapModelToEntity(stops),
+                        dateMapper.getCabifyDateFormat(startsAt)))
                 .map(rateEntities -> rateMapper.mapEntityToModel(rateEntities));
     }
 }

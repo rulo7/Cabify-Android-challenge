@@ -1,18 +1,14 @@
 package com.racobos.presentation.ui.ratecalculator;
 
-import com.racobos.domain.models.JourneyRate;
+import com.racobos.domain.models.Journey;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.usecases.EstimateJourney;
 import com.racobos.presentation.di.scopes.PerActivity;
 import com.racobos.presentation.ui.bases.mvp.BasePresenter;
 import com.racobos.presentation.ui.bases.mvp.BaseView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import icepick.State;
-
+import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by rulo7 on 09/10/2016.
@@ -40,9 +36,9 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
         } else {
             getView().setDestination(destination.getLat(), destination.getLon());
         }
-        if (origin == null)
+        if (origin == null) {
             getView().showSubmitOriginRequiredMessage();
-        else {
+        } else {
             getView().setOrigin(origin.getLat(), origin.getLon());
         }
         if (destination != null && origin != null) {
@@ -86,7 +82,6 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
         } else {
             getView().showErrorDateSelected();
         }
-
     }
 
     private void onError(Throwable throwable) {
@@ -94,9 +89,9 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
         getView().notifySomethingWentWrong();
     }
 
-    private void onGetRates(List<JourneyRate> journeyRates) {
+    private void onGetRates(List<Journey> journeys) {
         getView().hideProgress();
-        getView().navigateToJourneyRatesList(journeyRates);
+        getView().navigateToJourneyRatesList(journeys);
     }
 
     @Override
@@ -126,7 +121,7 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
 
         void notifySomethingWentWrong();
 
-        void navigateToJourneyRatesList(List<JourneyRate> journeyRates);
+        void navigateToJourneyRatesList(List<Journey> journeys);
 
         interface OnRequestDateTimeListener {
             void onDateTimeResponse(Long datetime);

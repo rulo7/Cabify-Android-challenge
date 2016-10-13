@@ -2,23 +2,20 @@ package com.racobos.domain.usecases;
 
 import com.racobos.domain.executors.PostExecutionThread;
 import com.racobos.domain.executors.ThreadExecutor;
-import com.racobos.domain.models.JourneyRate;
+import com.racobos.domain.models.Journey;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.repositories.CabifyApiRepository;
 import com.racobos.domain.usecases.base.UseCase;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import rx.Observable;
 
 /**
  * Created by rulo7 on 09/10/2016.
  */
-public class EstimateJourney extends UseCase<List<JourneyRate>> {
+public class EstimateJourney extends UseCase<List<Journey>> {
 
     private CabifyApiRepository cabifyApiRepository;
     private List<StopStation> stops = new ArrayList<>();
@@ -42,7 +39,7 @@ public class EstimateJourney extends UseCase<List<JourneyRate>> {
 
 
     @Override
-    protected Observable<List<JourneyRate>> buildUseCaseObservable() {
+    protected Observable<List<Journey>> buildUseCaseObservable() {
         return cabifyApiRepository.estimateJourney(stops, startsAt);
     }
 }

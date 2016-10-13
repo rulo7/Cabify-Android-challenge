@@ -8,12 +8,12 @@ android {
     buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
     defaultConfig {
         applicationId globalConfiguration.getAt("androidApplicationId")
-        //minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
-        minSdkVersion 24
+        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode globalConfiguration.getAt("androidVersionCode")
         versionName globalConfiguration.getAt("androidVersionName")
         testInstrumentationRunner globalConfiguration.getAt("testInstrumentationRunner")
+        multiDexEnabled true
     }
     signingConfigs {
         debug {
@@ -25,12 +25,8 @@ android {
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
             resValue "string", "GOOGLE_API_KEY", 'AIzaSyBn23hn4eg15ajts1s98y_qvhok5Tebhik'
-        }
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
     compileOptions {
@@ -91,4 +87,10 @@ dependencies {
     // IcePick
     compile rootProject.ext.dependencies_sources.icepick_library
     provided rootProject.ext.dependencies_sources.icepick_processor
+
+    // Multidex :(
+    compile rootProject.ext.dependencies_sources.multidex
+
+    // Glide
+    compile rootProject.ext.dependencies_sources.glide_library
 }

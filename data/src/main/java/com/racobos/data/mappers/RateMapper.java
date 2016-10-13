@@ -1,7 +1,7 @@
 package com.racobos.data.mappers;
 
 import com.racobos.data.entities.RateEntity;
-import com.racobos.domain.models.JourneyRate;
+import com.racobos.domain.models.Journey;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -9,7 +9,7 @@ import javax.inject.Singleton;
  * Created by raulcobos on 11/10/16.
  */
 @Singleton
-public class RateMapper extends Mapper<RateEntity, JourneyRate> {
+public class RateMapper extends Mapper<RateEntity, Journey> {
 
     private VehicleMapper vehicleMapper;
 
@@ -19,7 +19,7 @@ public class RateMapper extends Mapper<RateEntity, JourneyRate> {
     }
 
     @Override
-    public RateEntity mapModelToEntity(JourneyRate model) {
+    public RateEntity mapModelToEntity(Journey model) {
         if (model == null) {
             return null;
         }
@@ -34,21 +34,21 @@ public class RateMapper extends Mapper<RateEntity, JourneyRate> {
     }
 
     @Override
-    public JourneyRate mapEntityToModel(RateEntity entity) {
+    public Journey mapEntityToModel(RateEntity entity) {
         if (entity == null) {
             return null;
         }
-        JourneyRate journeyRate = new JourneyRate();
-        journeyRate.setCurrencySymbol(entity.getCurrencySymbol());
-        journeyRate.setCurrency(entity.getCurrency());
-        journeyRate.setFormattedPrice(entity.getFormattedPrice());
+        Journey journey = new Journey();
+        journey.setCurrencySymbol(entity.getCurrencySymbol());
+        journey.setCurrency(entity.getCurrency());
+        journey.setFormattedPrice(entity.getFormattedPrice());
         if (entity.getEta() != null) {
-            journeyRate.setMaxSecondsToArrive(entity.getEta().getMax());
-            journeyRate.setMinSecondsToArrive(entity.getEta().getMin());
-            journeyRate.setTimeEstimation(entity.getEta().getFormatted());
+            journey.setMaxSecondsToArrive(entity.getEta().getMax());
+            journey.setMinSecondsToArrive(entity.getEta().getMin());
+            journey.setTimeEstimation(entity.getEta().getFormatted());
         }
-        journeyRate.setTotalPrice(entity.getTotalPrice());
-        journeyRate.setVehicle(vehicleMapper.mapEntityToModel(entity.getVehicleType()));
-        return journeyRate;
+        journey.setTotalPrice(entity.getTotalPrice());
+        journey.setVehicle(vehicleMapper.mapEntityToModel(entity.getVehicleType()));
+        return journey;
     }
 }

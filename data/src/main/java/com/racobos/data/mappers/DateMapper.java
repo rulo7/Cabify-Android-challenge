@@ -2,7 +2,6 @@ package com.racobos.data.mappers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -16,7 +15,7 @@ public class DateMapper {
     public DateMapper() {
     }
 
-    public String getCabifyDateFortmat(Long timeInMillis) {
+    public String getCabifyDateFormat(Long timeInMillis) {
         if (timeInMillis == null) {
             return null;
         } else {

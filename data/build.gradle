@@ -1,7 +1,5 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
-
 
 android {
     publishNonDefault true
@@ -13,15 +11,10 @@ android {
         minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode globalConfiguration.getAt("androidVersionCode")
-        buildConfigField "String", "CABIFY_API_BASE_URL", '"http://test.cabify.com"'
-        buildConfigField "String", "CABIFY_API_TOKEN", '"6o_FrppOEQ5RrCkBOEKaBM-puJleMKrRn5nW_cy7H9Y"'
+        buildConfigField "String", "CABIFY_API_BASE_URL", '"https://test.cabify.com"'
+        buildConfigField "String", "CABIFY_API_TOKEN", '"Bearer 6o_FrppOEQ5RrCkBOEKaBM-puJleMKrRn5nW_cy7H9Y"'
     }
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -41,10 +34,6 @@ dependencies {
 
     // Javax Inject
     compile rootProject.ext.dependencies_sources.javax_inject
-
-    // Dagger 2
-    apt rootProject.ext.dependencies_sources.dagger_compiler
-    compile rootProject.ext.dependencies_sources.dagger_library
 
     // rx
     compile rootProject.ext.dependencies_sources.rx_android_library
