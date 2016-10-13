@@ -6,15 +6,19 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import butterknife.BindView;
-import butterknife.ButterKnife;
+
 import com.racobos.domain.R;
 import com.racobos.domain.models.Journey;
 import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by rulo7 on 12/10/2016.
@@ -69,6 +73,7 @@ public class JourneysListActivity extends BaseActivity implements JourneysListPr
     public void renderJourneys(List<Journey> journeys) {
         if (adapter == null) {
             adapter = new JourneysListAdapter(journeys);
+            recyclerViewJourneys.setAdapter(adapter);
         }
         adapter.notifyDataSetChanged();
     }

@@ -1,14 +1,18 @@
 package com.racobos.presentation.ui.ratecalculator;
 
+import com.racobos.domain.errors.ErrorCallback;
 import com.racobos.domain.models.Journey;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.usecases.EstimateJourney;
 import com.racobos.presentation.di.scopes.PerActivity;
 import com.racobos.presentation.ui.bases.mvp.BasePresenter;
 import com.racobos.presentation.ui.bases.mvp.BaseView;
-import icepick.State;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import icepick.State;
 
 /**
  * Created by rulo7 on 09/10/2016.
@@ -70,23 +74,42 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
 
     public void submit() {
         if (origin != null && destination != null) {
-            getView().requestDateTime(datetime -> estimate(datetime));
+            getView().requestStartMoment(datetime -> estimate(datetime));
         }
     }
 
     private void estimate(Long timeInMillis) {
-        if (timeInMillis > System.currentTimeMillis()) {
+        if (timeInMillis != null && timeInMillis < System.currentTimeMillis()) {
+            getView().showErrorDateSelected();
+        } else {
             getView().showProgress();
             estimateJourney.setParams(timeInMillis, origin, destination);
             estimateJourney.execute(this::onGetRates, this::onError);
-        } else {
-            getView().showErrorDateSelected();
         }
     }
 
     private void onError(Throwable throwable) {
         getView().hideProgress();
-        getView().notifySomethingWentWrong();
+        getErrorManager().handleThrowableError(new ErrorCallback() {
+            @Override
+            public void onHttpError(int status, String message) {
+                if (status == 404) {
+                    getView().notifyErrorSelectedPlaces();
+                } else if (status == 400) {
+                    getView().showErrorDateSelected();
+                }
+            }
+
+            @Override
+            public void onNetworkError(String message) {
+                getView().notifyErrorNetwork();
+            }
+
+            @Override
+            public void unknownError(String message) {
+                getView().notifySomethingWentWrong();
+            }
+        }, throwable);
     }
 
     private void onGetRates(List<Journey> journeys) {
@@ -111,7 +134,7 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
 
         void showSubmitDestinationRequiredMessage();
 
-        void requestDateTime(OnRequestDateTimeListener onRequestDateTimeListener);
+        void requestStartMoment(OnRequestDateTimeListener onRequestDateTimeListener);
 
         void showErrorDateSelected();
 
@@ -122,6 +145,10 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
         void notifySomethingWentWrong();
 
         void navigateToJourneyRatesList(List<Journey> journeys);
+
+        void notifyErrorNetwork();
+
+        void notifyErrorSelectedPlaces();
 
         interface OnRequestDateTimeListener {
             void onDateTimeResponse(Long datetime);

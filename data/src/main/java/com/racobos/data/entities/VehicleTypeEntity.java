@@ -2,6 +2,7 @@ package com.racobos.data.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import lombok.Data;
 
 /**
@@ -36,11 +37,34 @@ public class VehicleTypeEntity {
     @SerializedName("icon")
     @Expose
     private String icon;
+    @SerializedName("eta")
+    @Expose
+    private Eta eta;
+
+    public void setEta(Integer min, Integer max, String formatted) {
+        eta = new Eta();
+        eta.setMin(min);
+        eta.setMax(max);
+        eta.setFormatted(formatted);
+    }
 
     @Data
     public class Icons {
         @SerializedName("regular")
         @Expose
         private String regular;
+    }
+
+    @Data
+    public class Eta {
+        @SerializedName("min")
+        @Expose
+        private Integer min;
+        @SerializedName("max")
+        @Expose
+        private Integer max;
+        @SerializedName("formatted")
+        @Expose
+        private String formatted;
     }
 }

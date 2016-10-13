@@ -2,6 +2,7 @@ package com.racobos.data.mappers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -19,7 +20,7 @@ public class DateMapper {
         if (timeInMillis == null) {
             return null;
         } else {
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             return simpleDateFormat.format(new Date(timeInMillis));
         }
     }

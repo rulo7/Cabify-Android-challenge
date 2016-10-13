@@ -2,8 +2,10 @@ package com.racobos.presentation.di.modules;
 
 import android.content.Context;
 
+import com.racobos.data.errors.ErrorDataManager;
 import com.racobos.data.executors.JobExecutor;
 import com.racobos.data.repositories.CabifyApiDataRepository;
+import com.racobos.domain.errors.ErrorManager;
 import com.racobos.domain.executors.PostExecutionThread;
 import com.racobos.domain.executors.ThreadExecutor;
 import com.racobos.domain.repositories.CabifyApiRepository;
@@ -43,6 +45,12 @@ public class ApplicationModule {
     @Singleton
     ThreadExecutor provideThreadExecutor(JobExecutor jobExecutor) {
         return jobExecutor;
+    }
+
+    @Provides
+    @Singleton
+    ErrorManager provideErrorManager(ErrorDataManager errorDataManager) {
+        return errorDataManager;
     }
 
     @Provides

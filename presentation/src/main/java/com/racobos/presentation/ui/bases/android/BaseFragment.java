@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.racobos.domain.errors.ErrorManager;
 import com.racobos.presentation.di.ComponentReflectionInjector;
 import com.racobos.presentation.di.components.DaggerFragmentComponent;
 import com.racobos.presentation.di.components.FragmentComponent;
@@ -14,6 +15,8 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import icepick.Icepick;
 import timber.log.Timber;
 
@@ -22,6 +25,9 @@ import timber.log.Timber;
  */
 
 public abstract class BaseFragment extends Fragment implements BaseView {
+
+    @Inject
+    ErrorManager errorManager;
 
     private List<BasePresenter> presenters = new ArrayList<>();
 
@@ -44,8 +50,11 @@ public abstract class BaseFragment extends Fragment implements BaseView {
         findPresenter();
         for (BasePresenter presenter : presenters) {
             presenter.setView(this);
+            presenter.setErrorManager(errorManager);
             Icepick.restoreInstanceState(presenter, savedInstanceState);
-            presenter.onStart();
+            if (savedInstanceState == null) {
+                presenter.onStart();
+            }
         }
     }
 

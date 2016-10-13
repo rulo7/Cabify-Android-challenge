@@ -2,6 +2,7 @@ package com.racobos.data.mappers;
 
 import com.racobos.data.entities.RateEntity;
 import com.racobos.domain.models.Journey;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -26,9 +27,10 @@ public class RateMapper extends Mapper<RateEntity, Journey> {
         RateEntity rateEntity = new RateEntity();
         rateEntity.setCurrency(model.getCurrency());
         rateEntity.setCurrencySymbol(model.getCurrencySymbol());
-        rateEntity.setEta(model.getMinSecondsToArrive(), model.getMaxSecondsToArrive(), model.getTimeEstimation());
         rateEntity.setFormattedPrice(model.getFormattedPrice());
-        rateEntity.setTotalPrice(model.getTotalPrice());
+        if (model.getTotalPrice() != null) {
+            rateEntity.setTotalPrice((int) (model.getTotalPrice() * 100));
+        }
         rateEntity.setVehicleType(vehicleMapper.mapModelToEntity(model.getVehicle()));
         return rateEntity;
     }
@@ -42,12 +44,9 @@ public class RateMapper extends Mapper<RateEntity, Journey> {
         journey.setCurrencySymbol(entity.getCurrencySymbol());
         journey.setCurrency(entity.getCurrency());
         journey.setFormattedPrice(entity.getFormattedPrice());
-        if (entity.getEta() != null) {
-            journey.setMaxSecondsToArrive(entity.getEta().getMax());
-            journey.setMinSecondsToArrive(entity.getEta().getMin());
-            journey.setTimeEstimation(entity.getEta().getFormatted());
+        if (entity.getTotalPrice() != null) {
+            journey.setTotalPrice(entity.getTotalPrice() / 100.0d);
         }
-        journey.setTotalPrice(entity.getTotalPrice());
         journey.setVehicle(vehicleMapper.mapEntityToModel(entity.getVehicleType()));
         return journey;
     }

@@ -32,6 +32,7 @@
         </activity>
 
         <activity android:name="com.racobos.presentation.ui.ratecalculator.RateCalculatorActivity" />
+        <activity android:name="com.racobos.presentation.ui.journeyslist.JourneysListActivity" />
 
     </application>
 </manifest>

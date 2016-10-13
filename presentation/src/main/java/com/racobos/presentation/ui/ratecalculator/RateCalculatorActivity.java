@@ -8,18 +8,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.racobos.domain.R;
 import com.racobos.domain.models.Journey;
 import com.racobos.presentation.navigation.Navigator;
 import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
 import com.racobos.presentation.ui.components.views.map.MapComponent;
+
 import java.util.Calendar;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by rulo7 on 08/10/2016.
@@ -139,7 +143,14 @@ public class RateCalculatorActivity extends BaseActivity
     }
 
     @Override
-    public void requestDateTime(OnRequestDateTimeListener onRequestDateTimeListener) {
+    public void requestStartMoment(OnRequestDateTimeListener onRequestDateTimeListener) {
+        new AlertDialog.Builder(this).setTitle(R.string.set_start_time)
+                .setNegativeButton("As soon as posible", (dialog, which) -> onRequestDateTimeListener.onDateTimeResponse(null))
+                .setPositiveButton(getString(R.string.set_moment), (dialog, which) -> requestDateTime(onRequestDateTimeListener))
+                .show();
+    }
+
+    private void requestDateTime(OnRequestDateTimeListener onRequestDateTimeListener) {
         Calendar currentCalendar = Calendar.getInstance();
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             TimePickerDialog timePickerDialog = new TimePickerDialog(this, (view1, hourOfDay, minute) -> {
@@ -182,6 +193,16 @@ public class RateCalculatorActivity extends BaseActivity
     @Override
     public void navigateToJourneyRatesList(List<Journey> journeys) {
         navigator.navigateToRateList(journeys, this);
+    }
+
+    @Override
+    public void notifyErrorNetwork() {
+        Toast.makeText(this, R.string.network_error_default_message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void notifyErrorSelectedPlaces() {
+        Toast.makeText(this, R.string.unavalaible_service_under_selected_places, Toast.LENGTH_SHORT).show();
     }
 
     @OnClick(R.id.submit)

@@ -14,6 +14,10 @@
     <string name="starts_at">Starts at</string>
     <string name="invalid_selected_time">The selected date and time is invalid</string>
     <string name="default_error_message">Ups!, we are sorry, something went wrong</string>
+    <string name="set_start_time">Set the starts time</string>
+    <string name="set_moment">Set the moment</string>
+    <string name="network_error_default_message">It happended a network error, please retry later</string>
+    <string name="unavalaible_service_under_selected_places">Sorry, our service is not available between the places that you selected</string>
     <array name="position_selection">
         <item>@string/origin</item>
         <item>@string/destination</item>

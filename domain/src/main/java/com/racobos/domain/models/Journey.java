@@ -1,6 +1,7 @@
 package com.racobos.domain.models;
 
 import java.io.Serializable;
+
 import lombok.Data;
 
 /**
@@ -13,7 +14,4 @@ public class Journey implements Serializable {
     private String formattedPrice;
     private String currency;
     private String currencySymbol;
-    private String timeEstimation;
-    private Integer minSecondsToArrive;
-    private Integer maxSecondsToArrive;
 }

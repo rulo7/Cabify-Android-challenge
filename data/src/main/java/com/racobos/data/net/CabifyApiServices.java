@@ -3,8 +3,10 @@ package com.racobos.data.net;
 import com.racobos.data.BuildConfig;
 import com.racobos.data.entities.RateEntity;
 import com.racobos.data.net.requests.EstimateRequest;
+
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

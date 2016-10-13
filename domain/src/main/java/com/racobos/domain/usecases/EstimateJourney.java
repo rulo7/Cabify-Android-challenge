@@ -6,10 +6,13 @@ import com.racobos.domain.models.Journey;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.repositories.CabifyApiRepository;
 import com.racobos.domain.usecases.base.UseCase;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.inject.Inject;
+
 import rx.Observable;
 
 /**

@@ -2,6 +2,7 @@ package com.racobos.data.mappers;
 
 import com.racobos.data.entities.VehicleTypeEntity;
 import com.racobos.domain.models.Vehicle;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -28,6 +29,7 @@ public class VehicleMapper extends Mapper<VehicleTypeEntity, Vehicle> {
         vehicleTypeEntity.setId(model.getId());
         vehicleTypeEntity.setReservedOnly(model.getReservedOnly());
         vehicleTypeEntity.setShortName(model.getShortName());
+        vehicleTypeEntity.setEta(model.getMinSecondsToArrive(), model.getMaxSecondsToArrive(), model.getTimeEstimation());
         return vehicleTypeEntity;
     }
 
@@ -46,6 +48,11 @@ public class VehicleMapper extends Mapper<VehicleTypeEntity, Vehicle> {
             vehicle.setImage(entity.getIcons().getRegular());
         }
         vehicle.setName(entity.getName());
+        if (entity.getEta() != null) {
+            vehicle.setMaxSecondsToArrive(entity.getEta().getMax());
+            vehicle.setMinSecondsToArrive(entity.getEta().getMin());
+            vehicle.setTimeEstimation(entity.getEta().getFormatted());
+        }
         return vehicle;
     }
 }

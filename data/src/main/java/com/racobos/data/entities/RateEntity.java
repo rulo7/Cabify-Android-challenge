@@ -2,6 +2,7 @@ package com.racobos.data.entities;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
 import lombok.Data;
 
 /**
@@ -14,8 +15,8 @@ public class RateEntity {
     private VehicleTypeEntity vehicleType;
     @SerializedName("total_price")
     @Expose
-    private Double totalPrice;
-    @SerializedName("formatted_price")
+    private Integer totalPrice;
+    @SerializedName("price_formatted")
     @Expose
     private String formattedPrice;
     @SerializedName("currency")
@@ -24,27 +25,4 @@ public class RateEntity {
     @SerializedName("currency_symbol")
     @Expose
     private String currencySymbol;
-    @SerializedName("eta")
-    @Expose
-    private Eta eta;
-
-    public void setEta(Integer min, Integer max, String formatted) {
-        eta = new Eta();
-        eta.setMin(min);
-        eta.setMax(max);
-        eta.setFormatted(formatted);
-    }
-
-    @Data
-    public class Eta {
-        @SerializedName("min")
-        @Expose
-        private Integer min;
-        @SerializedName("max")
-        @Expose
-        private Integer max;
-        @SerializedName("formatted")
-        @Expose
-        private String formatted;
-    }
 }

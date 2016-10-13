@@ -5,4 +5,5 @@ package com.racobos.presentation.ui.bases.mvp;
  */
 
 public interface BaseView {
+
 }

@@ -16,4 +16,7 @@ public class Vehicle implements Serializable {
     private String image;
     private Boolean reservedOnly;
     private Boolean asapOnly;
+    private String timeEstimation;
+    private Integer minSecondsToArrive;
+    private Integer maxSecondsToArrive;
 }
