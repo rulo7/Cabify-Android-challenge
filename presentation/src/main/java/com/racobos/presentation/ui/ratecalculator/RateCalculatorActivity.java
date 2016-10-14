@@ -144,8 +144,7 @@ public class RateCalculatorActivity extends BaseActivity
     @Override
     public void requestStartMoment(OnRequestDateTimeListener onRequestDateTimeListener) {
         new AlertDialog.Builder(this).setTitle(R.string.set_start_time)
-                .setNegativeButton("As soon as posible",
-                        (dialog, which) -> onRequestDateTimeListener.onDateTimeResponse(null))
+                .setNegativeButton(R.string.asap, (dialog, which) -> onRequestDateTimeListener.onDateTimeResponse(null))
                 .setPositiveButton(getString(R.string.set_moment),
                         (dialog, which) -> requestDateTime(onRequestDateTimeListener))
                 .show();

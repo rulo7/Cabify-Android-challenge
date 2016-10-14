@@ -18,6 +18,7 @@
     <string name="set_moment">Set the moment</string>
     <string name="network_error_default_message">It happended a network error, please retry later</string>
     <string name="unavalaible_service_under_selected_places">Sorry, our service is not available between the places that you selected</string>
+    <string name="asap">As soon as posible</string>
     <array name="position_selection">
         <item>@string/origin</item>
         <item>@string/destination</item>

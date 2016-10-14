@@ -17,8 +17,6 @@ import timber.log.Timber;
 import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.replaceText;
-import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -50,13 +48,15 @@ public class RateCalculatorTest {
     }
 
     @Test
-    public void testLoginWrong() {
+    public void testCalculateRightRoute() {
         allowPermissionsIfNeeded();
-        onView(withText("OK")).check(matches(isDisplayed())).perform(click());
-        onView(withId(R.id.submit)).check(withText(R.string.)).perform(typeText("email@dominio.com"));
-        onView(withId(R.id.password)).perform(replaceText("contraseña"));
-        onView(withId(R.id.email_sign_in_button)).perform(click());
-        onView(withId(R.id.password)).check(
-                matches(hasErrorText(activityRule.getActivity().getString(R.string.error_incorrect_password))));
+        onView(withText(R.string.undestood)).check(matches(isDisplayed())).perform(click());
+        onView(withId(R.id.submit)).check(matches(withText(R.string.origin_can_not_be_empty)));
+        // TODO : set origin (Alberto Aguilera)
+        onView(withId(R.id.submit)).check(matches(withText(R.string.destination_can_not_be_empty)));
+        // TODO : set destination (Calle Witerico)
+        onView(withId(R.id.submit)).check(matches(withText(R.string.estimate))).perform(click());
+        onView(withText(R.string.asap)).check(matches(isDisplayed())).perform(click());
+        // TODO:check if go to JourneyListActiviy
     }
 }
