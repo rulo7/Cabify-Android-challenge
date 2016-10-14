@@ -15,7 +15,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -36,11 +35,9 @@ import com.racobos.presentation.ui.components.views.ViewComponent;
 import com.racobos.presentation.utils.PermissionManager;
 import com.racobos.presentation.utils.ScreenSizeOperations;
 import com.txusballesteros.mara.Trait;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
-
 import lombok.Data;
 import lombok.experimental.Builder;
 
@@ -72,7 +69,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
             ViewGroup holderView = (ViewGroup) appCompatActivity.findViewById(R.id.map_component);
             if (holderView != null) {
                 PermissionManager.requestMultiplePermissions(holderView, () -> {
-                    View view = LayoutInflater.from(appCompatActivity).inflate(R.layout.map_component_view, holderView, false);
+                    View view = LayoutInflater.from(appCompatActivity)
+                            .inflate(R.layout.map_component_view, holderView, false);
                     setupViews(view);
                     holderView.addView(view);
                     MapFragment mapFragment =
@@ -86,13 +84,11 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private void setupViews(View view) {
         autocompleteTextSearch = (AutoCompleteTextView) view.findViewById(R.id.edittext_search);
         iconSearch = (ImageView) view.findViewById(R.id.imageview_icon_search);
-        googleApiClient = new GoogleApiClient.Builder(appCompatActivity)
-                .enableAutoManage(appCompatActivity, connectionResult -> {
+        googleApiClient =
+                new GoogleApiClient.Builder(appCompatActivity).enableAutoManage(appCompatActivity, connectionResult -> {
                     autocompleteTextSearch.setVisibility(View.GONE);
                     Log.e(getClass().getSimpleName(), "Google api client connnection failed");
-                })
-                .addApi(Places.GEO_DATA_API)
-                .build();
+                }).addApi(Places.GEO_DATA_API).build();
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(appCompatActivity, googleApiClient, null, null);
         autocompleteTextSearch.setAdapter(placeAutocompleteAdapter);
         autocompleteTextSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -100,13 +96,13 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final AutocompletePrediction item = placeAutocompleteAdapter.getItem(position);
                 final String placeId = item.getPlaceId();
-                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi
-                        .getPlaceById(googleApiClient, placeId);
+                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
                 placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
                     @Override
                     public void onResult(@NonNull PlaceBuffer places) {
                         if (!places.getStatus().isSuccess()) {
-                            Log.e(getClass().getSimpleName(), "Place query did not complete. Error: " + places.getStatus().toString());
+                            Log.e(getClass().getSimpleName(),
+                                    "Place query did not complete. Error: " + places.getStatus().toString());
                         } else if (places.getCount() > 0) {
                             onMapActionListener.onSearch(mapGoogleAddress(places.get(0)));
                         }
@@ -136,12 +132,10 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
             //<editor-fold desc="unused methods">
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-
             }
             //</editor-fold>
         });
@@ -150,7 +144,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private void hideKeyBoard() {
         View view = appCompatActivity.getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) appCompatActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm =
+                    (InputMethodManager) appCompatActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -187,7 +182,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
         if (googleMap != null) {
             if (snippet == null) {
                 try {
-                    List<android.location.Address> addresses = new Geocoder(appCompatActivity).getFromLocation(lat, lon, 1);
+                    List<android.location.Address> addresses =
+                            new Geocoder(appCompatActivity).getFromLocation(lat, lon, 1);
                     if (addresses.size() > 0) {
                         android.location.Address address = addresses.get(0);
                         if (address.getMaxAddressLineIndex() > 0) {
@@ -225,8 +221,10 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     }
 
     public void removeMarker(String id) {
-        markers.get(id).remove();
-        markers.remove(id);
+        if (markers.containsKey(id)) {
+            markers.get(id).remove();
+            markers.remove(id);
+        }
     }
 
     public interface OnMapActionListener {

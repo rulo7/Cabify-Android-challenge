@@ -6,13 +6,10 @@ import com.racobos.domain.models.Journey;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.repositories.CabifyApiRepository;
 import com.racobos.domain.usecases.base.UseCase;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import javax.inject.Inject;
-
 import rx.Observable;
 
 /**
@@ -21,12 +18,12 @@ import rx.Observable;
 public class EstimateJourney extends UseCase<List<Journey>> {
 
     private CabifyApiRepository cabifyApiRepository;
-    private List<StopStation> stops = new ArrayList<>();
+    private List<StopStation> stops;
     private Long startsAt;
 
     @Inject
     public EstimateJourney(CabifyApiRepository cabifyApiRepository, ThreadExecutor threadExecutor,
-                           PostExecutionThread postExecutionThread) {
+            PostExecutionThread postExecutionThread) {
         super(threadExecutor, postExecutionThread);
         this.cabifyApiRepository = cabifyApiRepository;
     }
@@ -36,10 +33,9 @@ public class EstimateJourney extends UseCase<List<Journey>> {
     }
 
     public void setParams(Long startsAt, List<StopStation> stops) {
-        this.stops.addAll(stops);
+        this.stops = new ArrayList<>(stops);
         this.startsAt = startsAt;
     }
-
 
     @Override
     protected Observable<List<Journey>> buildUseCaseObservable() {

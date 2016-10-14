@@ -8,22 +8,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 import com.racobos.domain.R;
 import com.racobos.domain.models.Journey;
 import com.racobos.presentation.navigation.Navigator;
 import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
 import com.racobos.presentation.ui.components.views.map.MapComponent;
-
+import icepick.State;
 import java.util.Calendar;
 import java.util.List;
-
 import javax.inject.Inject;
-
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by rulo7 on 08/10/2016.
@@ -39,7 +36,9 @@ public class RateCalculatorActivity extends BaseActivity
     @Inject
     Navigator navigator;
 
+    @State
     String originMarkerId;
+    @State
     String destinationMarkerId;
 
     @BindView(R.id.submit)
@@ -81,25 +80,25 @@ public class RateCalculatorActivity extends BaseActivity
 
     @Override
     public void onMapClick(double lat, double lng) {
-        pickOriginOrDestination(lat, lng, null);
+        pickOriginOrDestination(lat, lng);
     }
 
-    private void pickOriginOrDestination(double lat, double lng, String snippet) {
+    private void pickOriginOrDestination(double lat, double lng) {
         new AlertDialog.Builder(this).setTitle(R.string.choose_position)
                 .setItems(R.array.position_selection, (dialog, which) -> {
                     String[] items = getResources().getStringArray(R.array.position_selection);
                     if (items[which].equals(getString(R.string.origin))) {
-                        rateCalculatorPresenter.setOrigin(lat, lng);
                         if (originMarkerId != null) {
                             composer.removeMarker(originMarkerId);
                         }
-                        originMarkerId = composer.addMarker(lat, lng, getString(R.string.origin), snippet);
+                        originMarkerId = composer.addMarker(lat, lng, getString(R.string.origin), null);
+                        rateCalculatorPresenter.setOrigin(lat, lng);
                     } else if (items[which].equals(getString(R.string.destination))) {
-                        rateCalculatorPresenter.setDestination(lat, lng);
                         if (destinationMarkerId != null) {
                             composer.removeMarker(destinationMarkerId);
                         }
-                        destinationMarkerId = composer.addMarker(lat, lng, getString(R.string.destination), snippet);
+                        destinationMarkerId = composer.addMarker(lat, lng, getString(R.string.destination), null);
+                        rateCalculatorPresenter.setDestination(lat, lng);
                     }
                 })
                 .show();
@@ -113,7 +112,7 @@ public class RateCalculatorActivity extends BaseActivity
     @Override
     public void onSearch(MapComponent.Address address) {
         if (address != null) {
-            pickOriginOrDestination(address.getLat(), address.getLon(), address.getAddress());
+            pickOriginOrDestination(address.getLat(), address.getLon());
         }
     }
 
@@ -145,8 +144,10 @@ public class RateCalculatorActivity extends BaseActivity
     @Override
     public void requestStartMoment(OnRequestDateTimeListener onRequestDateTimeListener) {
         new AlertDialog.Builder(this).setTitle(R.string.set_start_time)
-                .setNegativeButton("As soon as posible", (dialog, which) -> onRequestDateTimeListener.onDateTimeResponse(null))
-                .setPositiveButton(getString(R.string.set_moment), (dialog, which) -> requestDateTime(onRequestDateTimeListener))
+                .setNegativeButton("As soon as posible",
+                        (dialog, which) -> onRequestDateTimeListener.onDateTimeResponse(null))
+                .setPositiveButton(getString(R.string.set_moment),
+                        (dialog, which) -> requestDateTime(onRequestDateTimeListener))
                 .show();
     }
 
@@ -177,12 +178,18 @@ public class RateCalculatorActivity extends BaseActivity
 
     @Override
     public void setDestination(Double lat, Double lon) {
-        composer.addMarker(lat, lon, getString(R.string.destination), null);
+        if (destinationMarkerId != null) {
+            composer.removeMarker(destinationMarkerId);
+        }
+        destinationMarkerId = composer.addMarker(lat, lon, getString(R.string.destination), null);
     }
 
     @Override
     public void setOrigin(Double lat, Double lon) {
-        composer.addMarker(lat, lon, getString(R.string.origin), null);
+        if (originMarkerId != null) {
+            composer.removeMarker(originMarkerId);
+        }
+        originMarkerId = composer.addMarker(lat, lon, getString(R.string.origin), null);
     }
 
     @Override
