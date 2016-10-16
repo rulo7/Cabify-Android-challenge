@@ -1,11 +1,11 @@
 package com.racobos.data.net;
 
 import com.racobos.data.BuildConfig;
-import com.racobos.data.entities.RateEntity;
-import com.racobos.data.net.requests.EstimateRequest;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -14,14 +14,11 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
-import rx.Observable;
 
 /**
  * Created by raulcobos on 11/10/16.
  */
-
+@Singleton
 public class CabifyApiServices {
 
     private static final String AUTHORIZATION_KEY_PARAM = "Authorization";
@@ -29,10 +26,10 @@ public class CabifyApiServices {
     private static final int READ_TIMEOUT = 10;
     private static final int WRITE_TIMEOUT = 15;
 
-    private static CabifyApiServices instance;
     private CabifyApi byeWalletApi;
 
-    private CabifyApiServices() {
+    @Inject
+    public CabifyApiServices() {
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder();
         if (BuildConfig.DEBUG) {
             clientBuilder.addInterceptor(getLoggerInterceptor());
@@ -49,11 +46,8 @@ public class CabifyApiServices {
         byeWalletApi = retrofit.create(CabifyApi.class);
     }
 
-    public static CabifyApi getApi() {
-        if (instance == null) {
-            instance = new CabifyApiServices();
-        }
-        return instance.byeWalletApi;
+    public CabifyApi getApi() {
+        return byeWalletApi;
     }
 
     private Interceptor getTokenInterceptor() {
@@ -69,10 +63,5 @@ public class CabifyApiServices {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         return interceptor;
-    }
-
-    public interface CabifyApi {
-        @POST("api/v2/estimate")
-        Observable<List<RateEntity>> estimateRate(@Body EstimateRequest estimateRequest);
     }
 }

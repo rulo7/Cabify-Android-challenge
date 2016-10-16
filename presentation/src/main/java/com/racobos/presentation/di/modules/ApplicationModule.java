@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.racobos.data.errors.ErrorDataManager;
 import com.racobos.data.executors.JobExecutor;
+import com.racobos.data.net.CabifyApi;
+import com.racobos.data.net.CabifyApiServices;
 import com.racobos.data.repositories.CabifyApiDataRepository;
 import com.racobos.domain.errors.ErrorManager;
 import com.racobos.domain.executors.PostExecutionThread;
@@ -51,6 +53,12 @@ public class ApplicationModule {
     @Singleton
     ErrorManager provideErrorManager(ErrorDataManager errorDataManager) {
         return errorDataManager;
+    }
+
+    @Provides
+    @Singleton
+    CabifyApi provideCabifyApi(CabifyApiServices cabifyApiServices) {
+        return cabifyApiServices.getApi();
     }
 
     @Provides

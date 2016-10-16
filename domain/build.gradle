@@ -20,4 +20,8 @@ dependencies {
     provided rootProject.ext.dependencies_sources.javax_annotation
     // Javax Inject
     compile rootProject.ext.dependencies_sources.javax_inject
+
+    // Tests
+    testCompile rootProject.ext.dependencies_sources_tests.junit
+    testCompile rootProject.ext.dependencies_sources_tests.mockito
 }

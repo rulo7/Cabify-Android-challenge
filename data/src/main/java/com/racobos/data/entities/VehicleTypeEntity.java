@@ -1,5 +1,6 @@
 package com.racobos.data.entities;
 
+import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -40,6 +41,29 @@ public class VehicleTypeEntity {
     @SerializedName("eta")
     @Expose
     private Eta eta;
+
+    public static VehicleTypeEntity getMockObject() {
+        String jsonOnject = "{\n" +
+                "  \"_id\": \"executive_id\",\n" +
+                "  \"name\": \"Executive Class\",\n" +
+                "  \"short_name\": \"Executive\",\n" +
+                "  \"description\": \"A very large vehicle with comfortable seats\",\n" +
+                "  \"icons\": {\n" +
+                "    \"regular\": \"https://cabify.com/images/icons/vehicle_type/executive_27.png\"\n" +
+                "  },\n" +
+                "  \"reserved_only\": false,\n" +
+                "  \"asap_only\": false,\n" +
+                "  \"currency\": \"EUR\",\n" +
+                "  \"icon\": \"executive\",\n" +
+                "  \"eta\": {\n" +
+                "        \"min\": 100,\n" +
+                "        \"max\": 1000,\n" +
+                "        \"formatted\": \">2 min\"\n" +
+                "      }\n" +
+                "}";
+
+        return new Gson().fromJson(jsonOnject, VehicleTypeEntity.class);
+    }
 
     public void setEta(Integer min, Integer max, String formatted) {
         eta = new Eta();

@@ -28,5 +28,14 @@ ext {
 
     ]
 
-    dependencies_sources_tests = [junit: 'junit:junit:4.12',]
+    dependencies_sources_tests = [
+            junit              : 'junit:junit:4.12',
+            runner             : 'com.android.support.test:runner:0.5',
+            rules              : 'com.android.support.test:rules:0.5',
+            espresso_core      : 'com.android.support.test.espresso:espresso-core:2.2.2',
+            espresso_intents   : 'com.android.support.test.espresso:espresso-intents:2.2.2',
+            ui_automator       : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
+            android_annotations: 'com.android.support:support-annotations:24.2.1',
+            mockito            : 'org.mockito:mockito-core:1.10.19',
+    ]
 }

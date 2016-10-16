@@ -1,0 +1,18 @@
+{
+  "_id": "executive_id",
+  "name": "Executive Class",
+  "short_name": "Executive",
+  "description": "A very large vehicle with comfortable seats",
+  "icons": {
+    "regular": "https://cabify.com/images/icons/vehicle_type/executive_27.png"
+  },
+  "reserved_only": false,
+  "asap_only": false,
+  "currency": "EUR",
+  "icon": "executive",
+  "eta": {
+        "min": 100,
+        "max": 1000,
+        "formatted": ">2 min"
+      }
+}

@@ -1,8 +1,10 @@
 package com.racobos.data.errors;
 
+import com.google.gson.Gson;
 import com.racobos.domain.errors.ErrorCallback;
 import com.racobos.domain.errors.ErrorManager;
 
+import java.io.IOException;
 import java.net.UnknownHostException;
 
 import javax.inject.Inject;
@@ -24,7 +26,14 @@ public class ErrorDataManager implements ErrorManager {
     public void handleThrowableError(ErrorCallback errorCallback, Throwable exception) {
         if (exception instanceof HttpException) {
             HttpException httpException = (HttpException) exception;
-            errorCallback.onHttpError(httpException.code(), httpException.getMessage());
+            String message;
+            try {
+                CabifyErrorEntity cabifyErrorEntity = new Gson().fromJson(httpException.response().errorBody().string(), CabifyErrorEntity.class);
+                message = cabifyErrorEntity.getMessage();
+            } catch (IOException e) {
+                message = "unknown";
+            }
+            errorCallback.onHttpError(httpException.code(), message);
         } else if (exception instanceof UnknownHostException) {
             UnknownHostException unknownHostException = (UnknownHostException) exception;
             errorCallback.onNetworkError(unknownHostException.getMessage());

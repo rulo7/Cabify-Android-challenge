@@ -11,10 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -35,9 +36,11 @@ import com.racobos.presentation.ui.components.views.ViewComponent;
 import com.racobos.presentation.utils.PermissionManager;
 import com.racobos.presentation.utils.ScreenSizeOperations;
 import com.txusballesteros.mara.Trait;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+
 import lombok.Data;
 import lombok.experimental.Builder;
 
@@ -91,28 +94,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
                 }).addApi(Places.GEO_DATA_API).build();
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(appCompatActivity, googleApiClient, null, null);
         autocompleteTextSearch.setAdapter(placeAutocompleteAdapter);
-        autocompleteTextSearch.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final AutocompletePrediction item = placeAutocompleteAdapter.getItem(position);
-                final String placeId = item.getPlaceId();
-                PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
-                placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
-                    @Override
-                    public void onResult(@NonNull PlaceBuffer places) {
-                        if (!places.getStatus().isSuccess()) {
-                            Log.e(getClass().getSimpleName(),
-                                    "Place query did not complete. Error: " + places.getStatus().toString());
-                        } else if (places.getCount() > 0) {
-                            onMapActionListener.onSearch(mapGoogleAddress(places.get(0)));
-                        }
-                        places.release();
-                        hideKeyBoard();
-                        autocompleteTextSearch.clearFocus();
-                    }
-                });
-            }
-        });
+        autocompleteTextSearch.setOnItemClickListener((parent, view1, position, id) ->
+                autoComplete(placeAutocompleteAdapter.getItem(position)));
         autocompleteTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -138,6 +121,34 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
             public void afterTextChanged(Editable s) {
             }
             //</editor-fold>
+        });
+        autocompleteTextSearch.setOnEditorActionListener((v, actionId, event) -> {
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                if (placeAutocompleteAdapter.getCount() <= 0) {
+                    return true;
+                }
+                autoComplete(placeAutocompleteAdapter.getItem(0));
+            }
+            return false;
+        });
+    }
+
+    private void autoComplete(AutocompletePrediction item) {
+        final String placeId = item.getPlaceId();
+        PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
+        placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
+            @Override
+            public void onResult(@NonNull PlaceBuffer places) {
+                if (!places.getStatus().isSuccess()) {
+                    Log.e(getClass().getSimpleName(),
+                            "Place query did not complete. Error: " + places.getStatus().toString());
+                } else if (places.getCount() > 0) {
+                    onMapActionListener.onSearch(mapGoogleAddress(places.get(0)));
+                }
+                places.release();
+                hideKeyBoard();
+                autocompleteTextSearch.clearFocus();
+            }
         });
     }
 

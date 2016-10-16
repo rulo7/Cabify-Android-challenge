@@ -91,11 +91,17 @@ dependencies {
     compile rootProject.ext.dependencies_sources.glide_library
 
     // Tests
-    androidTestCompile 'com.android.support.test:runner:0.4'
-    // Set this dependency to use JUnit 4 rules
-    androidTestCompile 'com.android.support.test:rules:0.4'
-    // Set this dependency to build and run Espresso tests
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
-    // Set this dependency to build and run UI Automator tests
-    androidTestCompile 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    // Junit 4
+    testCompile 'junit:junit:4.12'
+
+    androidTestCompile rootProject.ext.dependencies_sources_tests.junit
+    // JUnit 4 rules
+    androidTestCompile rootProject.ext.dependencies_sources_tests.rules
+    // Espresso tests
+    androidTestCompile rootProject.ext.dependencies_sources_tests.espresso_core
+    androidTestCompile rootProject.ext.dependencies_sources_tests.espresso_intents
+    // UI Automator tests
+    androidTestCompile rootProject.ext.dependencies_sources_tests.ui_automator
+    // Annotations
+    androidTestCompile rootProject.ext.dependencies_sources_tests.android_annotations
 }
