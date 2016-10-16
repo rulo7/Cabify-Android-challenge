@@ -26,7 +26,8 @@ public class ToolbarComponent implements ViewComponent {
         if (appCompatActivity != null) {
             ViewGroup holderView = (ViewGroup) appCompatActivity.findViewById(R.id.toolbar_component);
             if (holderView != null) {
-                toolbar = (Toolbar) LayoutInflater.from(appCompatActivity).inflate(R.layout.toolbar_component_view, holderView, false);
+                toolbar = (Toolbar) LayoutInflater.from(appCompatActivity)
+                        .inflate(R.layout.toolbar_component_view, holderView, false);
                 holderView.addView(toolbar);
                 appCompatActivity.setSupportActionBar(toolbar);
             }

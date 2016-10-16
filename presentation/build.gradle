@@ -12,7 +12,7 @@ android {
         targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
         versionCode globalConfiguration.getAt("androidVersionCode")
         versionName globalConfiguration.getAt("androidVersionName")
-        testInstrumentationRunner globalConfiguration.getAt("testInstrumentationRunner")
+        //testInstrumentationRunner globalConfiguration.getAt("testInstrumentationRunner")
         multiDexEnabled true
     }
     signingConfigs {
@@ -32,6 +32,9 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 repositories {
@@ -91,17 +94,7 @@ dependencies {
     compile rootProject.ext.dependencies_sources.glide_library
 
     // Tests
-    // Junit 4
-    testCompile 'junit:junit:4.12'
+    testCompile rootProject.ext.dependencies_sources_tests.junit
+    testCompile rootProject.ext.dependencies_sources_tests.mockito
 
-    androidTestCompile rootProject.ext.dependencies_sources_tests.junit
-    // JUnit 4 rules
-    androidTestCompile rootProject.ext.dependencies_sources_tests.rules
-    // Espresso tests
-    androidTestCompile rootProject.ext.dependencies_sources_tests.espresso_core
-    androidTestCompile rootProject.ext.dependencies_sources_tests.espresso_intents
-    // UI Automator tests
-    androidTestCompile rootProject.ext.dependencies_sources_tests.ui_automator
-    // Annotations
-    androidTestCompile rootProject.ext.dependencies_sources_tests.android_annotations
 }

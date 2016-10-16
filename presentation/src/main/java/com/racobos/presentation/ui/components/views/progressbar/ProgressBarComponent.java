@@ -1,5 +1,6 @@
 package com.racobos.presentation.ui.components.views.progressbar;
 
+import android.support.annotation.VisibleForTesting;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,11 @@ public class ProgressBarComponent implements ViewComponent {
                 holderView.addView(progressBar);
             }
         }
+    }
+
+    @VisibleForTesting
+    public void setProgressBar(ProgressBar progressBar) {
+        this.progressBar = progressBar;
     }
 
     public void showProgress() {

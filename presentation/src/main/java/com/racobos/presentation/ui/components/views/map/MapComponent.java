@@ -40,6 +40,7 @@ import com.txusballesteros.mara.Trait;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import lombok.Data;
 import lombok.experimental.Builder;
@@ -57,7 +58,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private GoogleApiClient googleApiClient;
     private PlaceAutocompleteAdapter placeAutocompleteAdapter;
     private OnMapActionListener onMapActionListener;
-    private HashMap<String, Marker> markers = new HashMap<>();
+    private Map<String, Marker> markers = new HashMap<>();
     private AutoCompleteTextView autocompleteTextSearch;
     private ImageView iconSearch;
 
