@@ -1,9 +1,9 @@
 package com.racobos.presentation.ui.bases.mvp;
 
 import android.support.annotation.CallSuper;
-
+import android.support.annotation.VisibleForTesting;
 import com.racobos.domain.errors.ErrorManager;
-
+import com.racobos.presentation.idlingresource.SimpleIdlingResource;
 
 /**
  * Created by rulo7 on 07/10/2016.
@@ -14,6 +14,8 @@ public abstract class BasePresenter<T extends BaseView> {
     private T view;
 
     private ErrorManager errorManager;
+    //<editor-fold desc="Testing">
+    private SimpleIdlingResource simpleIdlingResource;
 
     protected T getView() {
         return view;
@@ -33,21 +35,29 @@ public abstract class BasePresenter<T extends BaseView> {
 
     @CallSuper
     public void onStart() {
-
     }
 
     @CallSuper
     public void onUpdate() {
-
     }
 
     @CallSuper
     public void onPause() {
-
     }
 
     @CallSuper
     public void onDestroy() {
-
     }
+
+    protected void isIdleWaitingForResource(boolean isWaiting) {
+        if (simpleIdlingResource != null) {
+            simpleIdlingResource.setIdleState(isWaiting);
+        }
+    }
+
+    @VisibleForTesting
+    public void setSimpleIdlingResource(SimpleIdlingResource simpleIdlingResource) {
+        this.simpleIdlingResource = simpleIdlingResource;
+    }
+    //</editor-fold>
 }

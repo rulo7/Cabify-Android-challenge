@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +16,6 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -32,16 +32,15 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.racobos.domain.R;
+import com.racobos.presentation.idlingresource.SimpleIdlingResource;
 import com.racobos.presentation.ui.components.views.ViewComponent;
 import com.racobos.presentation.utils.PermissionManager;
 import com.racobos.presentation.utils.ScreenSizeOperations;
 import com.txusballesteros.mara.Trait;
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import lombok.Data;
 import lombok.experimental.Builder;
 
@@ -61,6 +60,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private Map<String, Marker> markers = new HashMap<>();
     private AutoCompleteTextView autocompleteTextSearch;
     private ImageView iconSearch;
+    //<editor-fold desc="Testing methods">
+    private SimpleIdlingResource simpleIdlingResource;
 
     public MapComponent(AppCompatActivity appCompatActivity, OnMapActionListener onMapActionListener) {
         this.appCompatActivity = appCompatActivity;
@@ -79,6 +80,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
                     holderView.addView(view);
                     MapFragment mapFragment =
                             (MapFragment) appCompatActivity.getFragmentManager().findFragmentById(R.id.map_fragment);
+                    isIdleWaitingForResource(true);
                     mapFragment.getMapAsync(MapComponent.this);
                 }, Manifest.permission.ACCESS_FINE_LOCATION);
             }
@@ -95,8 +97,8 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
                 }).addApi(Places.GEO_DATA_API).build();
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(appCompatActivity, googleApiClient, null, null);
         autocompleteTextSearch.setAdapter(placeAutocompleteAdapter);
-        autocompleteTextSearch.setOnItemClickListener((parent, view1, position, id) ->
-                autoComplete(placeAutocompleteAdapter.getItem(position)));
+        autocompleteTextSearch.setOnItemClickListener(
+                (parent, view1, position, id) -> autoComplete(placeAutocompleteAdapter.getItem(position)));
         autocompleteTextSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -137,9 +139,11 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private void autoComplete(AutocompletePrediction item) {
         final String placeId = item.getPlaceId();
         PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
+        isIdleWaitingForResource(true);
         placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
             @Override
             public void onResult(@NonNull PlaceBuffer places) {
+                isIdleWaitingForResource(false);
                 if (!places.getStatus().isSuccess()) {
                     Log.e(getClass().getSimpleName(),
                             "Place query did not complete. Error: " + places.getStatus().toString());
@@ -177,6 +181,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        isIdleWaitingForResource(false);
         this.googleMap = googleMap;
         if (onMapActionListener != null) {
             googleMap.setOnMapClickListener(
@@ -239,6 +244,17 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
         }
     }
 
+    protected void isIdleWaitingForResource(boolean isWaiting) {
+        if (simpleIdlingResource != null) {
+            simpleIdlingResource.setIdleState(isWaiting);
+        }
+    }
+
+    @VisibleForTesting
+    public void setIdlingResource(SimpleIdlingResource simpleIdlingResource) {
+        this.simpleIdlingResource = simpleIdlingResource;
+    }
+
     public interface OnMapActionListener {
         void onMapClick(double lat, double lng);
 
@@ -254,8 +270,9 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
         private double lon;
         private String title;
         private String address;
-        private String number = "s/n";
+        private String number;
         private String city;
         private String country;
     }
+    //</editor-fold>
 }

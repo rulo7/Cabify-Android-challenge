@@ -7,12 +7,9 @@ import com.racobos.domain.usecases.EstimateJourney;
 import com.racobos.presentation.di.scopes.PerActivity;
 import com.racobos.presentation.ui.bases.mvp.BasePresenter;
 import com.racobos.presentation.ui.bases.mvp.BaseView;
-
-import java.util.List;
-
-import javax.inject.Inject;
-
 import icepick.State;
+import java.util.List;
+import javax.inject.Inject;
 
 /**
  * Created by rulo7 on 09/10/2016.
@@ -84,11 +81,13 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
         } else {
             getView().showProgress();
             estimateJourney.setParams(timeInMillis, origin, destination);
+            isIdleWaitingForResource(true);
             estimateJourney.execute(this::onGetRates, this::onError);
         }
     }
 
     private void onError(Throwable throwable) {
+        isIdleWaitingForResource(false);
         getView().hideProgress();
         getErrorManager().handleThrowableError(new ErrorCallback() {
             @Override
@@ -113,6 +112,7 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
     }
 
     private void onGetRates(List<Journey> journeys) {
+        isIdleWaitingForResource(false);
         getView().hideProgress();
         getView().navigateToJourneyRatesList(journeys);
     }
@@ -120,6 +120,7 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
     @Override
     public void onDestroy() {
         estimateJourney.unsubscribe();
+        isIdleWaitingForResource(false);
         super.onDestroy();
     }
 

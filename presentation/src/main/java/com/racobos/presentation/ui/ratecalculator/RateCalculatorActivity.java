@@ -6,6 +6,8 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 import android.widget.TextView;
 import android.widget.Toast;
 import butterknife.BindView;
@@ -13,6 +15,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import com.racobos.domain.R;
 import com.racobos.domain.models.Journey;
+import com.racobos.presentation.idlingresource.SimpleIdlingResource;
 import com.racobos.presentation.navigation.Navigator;
 import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
@@ -214,5 +217,14 @@ public class RateCalculatorActivity extends BaseActivity
     @OnClick(R.id.submit)
     public void submit() {
         rateCalculatorPresenter.submit();
+    }
+
+    @VisibleForTesting
+    @NonNull
+    @Override
+    public SimpleIdlingResource getIdlingResource() {
+        SimpleIdlingResource idlingResource = super.getIdlingResource();
+        composer.setIdlingResource(idlingResource);
+        return idlingResource;
     }
 }
