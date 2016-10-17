@@ -14,7 +14,7 @@ public abstract class BasePresenter<T extends BaseView> {
     private T view;
 
     private ErrorManager errorManager;
-    //<editor-fold desc="Testing">
+
     private SimpleIdlingResource simpleIdlingResource;
 
     protected T getView() {
@@ -49,7 +49,8 @@ public abstract class BasePresenter<T extends BaseView> {
     public void onDestroy() {
     }
 
-    protected void isIdleWaitingForResource(boolean isWaiting) {
+    //<editor-fold desc="Testing">
+    protected void isIdleFreeForResource(boolean isWaiting) {
         if (simpleIdlingResource != null) {
             simpleIdlingResource.setIdleState(isWaiting);
         }

@@ -219,6 +219,7 @@ public class RateCalculatorActivity extends BaseActivity
         rateCalculatorPresenter.submit();
     }
 
+    //<editor-fold desc="testing methods">
     @VisibleForTesting
     @NonNull
     @Override
@@ -227,4 +228,5 @@ public class RateCalculatorActivity extends BaseActivity
         composer.setIdlingResource(idlingResource);
         return idlingResource;
     }
+    //</editor-fold>
 }

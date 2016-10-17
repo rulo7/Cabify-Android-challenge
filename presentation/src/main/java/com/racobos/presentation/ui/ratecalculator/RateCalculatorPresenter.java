@@ -81,13 +81,13 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
         } else {
             getView().showProgress();
             estimateJourney.setParams(timeInMillis, origin, destination);
-            isIdleWaitingForResource(true);
+            isIdleFreeForResource(false);
             estimateJourney.execute(this::onGetRates, this::onError);
         }
     }
 
     private void onError(Throwable throwable) {
-        isIdleWaitingForResource(false);
+        isIdleFreeForResource(false);
         getView().hideProgress();
         getErrorManager().handleThrowableError(new ErrorCallback() {
             @Override
@@ -112,7 +112,7 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
     }
 
     private void onGetRates(List<Journey> journeys) {
-        isIdleWaitingForResource(false);
+        isIdleFreeForResource(true);
         getView().hideProgress();
         getView().navigateToJourneyRatesList(journeys);
     }
@@ -120,7 +120,7 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
     @Override
     public void onDestroy() {
         estimateJourney.unsubscribe();
-        isIdleWaitingForResource(false);
+        isIdleFreeForResource(true);
         super.onDestroy();
     }
 

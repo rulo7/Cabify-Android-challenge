@@ -28,6 +28,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
     ErrorManager errorHandler;
 
     private List<BasePresenter> presenters = new ArrayList<>();
+
     @VisibleForTesting
     private SimpleIdlingResource simpleIdlingResource;
 
@@ -106,6 +107,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         super.onDestroy();
     }
 
+    //<editor-fold desc="testing methods">
     @VisibleForTesting
     @NonNull
     public SimpleIdlingResource getIdlingResource() {
@@ -117,4 +119,5 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseView
         }
         return simpleIdlingResource;
     }
+    //</editor-fold>
 }

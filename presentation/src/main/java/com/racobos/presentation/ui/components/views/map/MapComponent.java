@@ -60,7 +60,6 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private Map<String, Marker> markers = new HashMap<>();
     private AutoCompleteTextView autocompleteTextSearch;
     private ImageView iconSearch;
-    //<editor-fold desc="Testing methods">
     private SimpleIdlingResource simpleIdlingResource;
 
     public MapComponent(AppCompatActivity appCompatActivity, OnMapActionListener onMapActionListener) {
@@ -80,7 +79,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
                     holderView.addView(view);
                     MapFragment mapFragment =
                             (MapFragment) appCompatActivity.getFragmentManager().findFragmentById(R.id.map_fragment);
-                    isIdleWaitingForResource(true);
+                    isIdleFreeForResource(true);
                     mapFragment.getMapAsync(MapComponent.this);
                 }, Manifest.permission.ACCESS_FINE_LOCATION);
             }
@@ -90,11 +89,13 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private void setupViews(View view) {
         autocompleteTextSearch = (AutoCompleteTextView) view.findViewById(R.id.edittext_search);
         iconSearch = (ImageView) view.findViewById(R.id.imageview_icon_search);
+        isIdleFreeForResource(true);
         googleApiClient =
                 new GoogleApiClient.Builder(appCompatActivity).enableAutoManage(appCompatActivity, connectionResult -> {
                     autocompleteTextSearch.setVisibility(View.GONE);
+                    isIdleFreeForResource(false);
                     Log.e(getClass().getSimpleName(), "Google api client connnection failed");
-                }).addApi(Places.GEO_DATA_API).build();
+                }).addApiIfAvailable(Places.GEO_DATA_API).build();
         placeAutocompleteAdapter = new PlaceAutocompleteAdapter(appCompatActivity, googleApiClient, null, null);
         autocompleteTextSearch.setAdapter(placeAutocompleteAdapter);
         autocompleteTextSearch.setOnItemClickListener(
@@ -139,17 +140,17 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
     private void autoComplete(AutocompletePrediction item) {
         final String placeId = item.getPlaceId();
         PendingResult<PlaceBuffer> placeResult = Places.GeoDataApi.getPlaceById(googleApiClient, placeId);
-        isIdleWaitingForResource(true);
+        isIdleFreeForResource(false);
         placeResult.setResultCallback(new ResultCallback<PlaceBuffer>() {
             @Override
             public void onResult(@NonNull PlaceBuffer places) {
-                isIdleWaitingForResource(false);
                 if (!places.getStatus().isSuccess()) {
                     Log.e(getClass().getSimpleName(),
                             "Place query did not complete. Error: " + places.getStatus().toString());
                 } else if (places.getCount() > 0) {
                     onMapActionListener.onSearch(mapGoogleAddress(places.get(0)));
                 }
+                isIdleFreeForResource(true);
                 places.release();
                 hideKeyBoard();
                 autocompleteTextSearch.clearFocus();
@@ -181,7 +182,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        isIdleWaitingForResource(false);
+        isIdleFreeForResource(false);
         this.googleMap = googleMap;
         if (onMapActionListener != null) {
             googleMap.setOnMapClickListener(
@@ -244,12 +245,13 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
         }
     }
 
-    protected void isIdleWaitingForResource(boolean isWaiting) {
+    protected void isIdleFreeForResource(boolean isWaiting) {
         if (simpleIdlingResource != null) {
             simpleIdlingResource.setIdleState(isWaiting);
         }
     }
 
+    //<editor-fold desc="testintg methods">
     @VisibleForTesting
     public void setIdlingResource(SimpleIdlingResource simpleIdlingResource) {
         this.simpleIdlingResource = simpleIdlingResource;
@@ -262,6 +264,7 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
         void onSearch(MapComponent.Address addresses);
     }
+    //</editor-fold>
 
     @Data
     @Builder
@@ -274,5 +277,4 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
         private String city;
         private String country;
     }
-    //</editor-fold>
 }
