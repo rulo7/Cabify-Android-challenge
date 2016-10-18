@@ -2,7 +2,7 @@ package com.racobos.domain.usecases;
 
 import com.racobos.domain.executors.PostExecutionThread;
 import com.racobos.domain.executors.ThreadExecutor;
-import com.racobos.domain.usecases.base.UseCase;
+import com.racobos.domain.usecases.base.BaseUseCase;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,11 +31,11 @@ public class UnitTestUseCase {
     @Mock
     private PostExecutionThread mockPostExecutionThread;
 
-    private UseCaseTestClass useCase;
+    private BaseUseCaseTestClass useCase;
 
     @Before
     public void setUp() {
-        this.useCase = new UseCaseTestClass(mockThreadExecutor, mockPostExecutionThread);
+        this.useCase = new BaseUseCaseTestClass(mockThreadExecutor, mockPostExecutionThread);
     }
 
     @Test
@@ -60,9 +60,9 @@ public class UnitTestUseCase {
         assertThat(testSubscriber.isUnsubscribed(), is(true));
     }
 
-    private static class UseCaseTestClass extends UseCase {
+    private static class BaseUseCaseTestClass extends BaseUseCase {
 
-        protected UseCaseTestClass(
+        protected BaseUseCaseTestClass(
                 ThreadExecutor threadExecutor,
                 PostExecutionThread postExecutionThread) {
             super(threadExecutor, postExecutionThread);

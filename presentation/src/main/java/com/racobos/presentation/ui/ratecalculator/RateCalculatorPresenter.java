@@ -5,11 +5,15 @@ import com.racobos.domain.models.Journey;
 import com.racobos.domain.models.StopStation;
 import com.racobos.domain.usecases.EstimateJourney;
 import com.racobos.presentation.di.scopes.PerActivity;
+import com.racobos.presentation.ui.bases.android.UseCase;
 import com.racobos.presentation.ui.bases.mvp.BasePresenter;
 import com.racobos.presentation.ui.bases.mvp.BaseView;
-import icepick.State;
+
 import java.util.List;
+
 import javax.inject.Inject;
+
+import icepick.State;
 
 /**
  * Created by rulo7 on 09/10/2016.
@@ -22,7 +26,8 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
     @State
     StopStation destination;
 
-    private EstimateJourney estimateJourney;
+    @UseCase
+    EstimateJourney estimateJourney;
 
     @Inject
     public RateCalculatorPresenter(EstimateJourney estimateJourney) {
@@ -87,7 +92,7 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
     }
 
     private void onError(Throwable throwable) {
-        isIdleFreeForResource(false);
+        isIdleFreeForResource(true);
         getView().hideProgress();
         getErrorManager().handleThrowableError(new ErrorCallback() {
             @Override
@@ -115,13 +120,6 @@ public class RateCalculatorPresenter extends BasePresenter<RateCalculatorPresent
         isIdleFreeForResource(true);
         getView().hideProgress();
         getView().navigateToJourneyRatesList(journeys);
-    }
-
-    @Override
-    public void onDestroy() {
-        estimateJourney.unsubscribe();
-        isIdleFreeForResource(true);
-        super.onDestroy();
     }
 
     public interface RateCalculatorView extends BaseView {

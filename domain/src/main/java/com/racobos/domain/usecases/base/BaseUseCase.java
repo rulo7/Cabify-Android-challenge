@@ -31,24 +31,24 @@ import rx.subscriptions.Subscriptions;
  * This interface represents a execution unit for different use cases (this means any use case
  * in the application should implement this contract).
  * <p>
- * By convention each UseCase implementation will return the result using a {@link rx.Subscriber}
+ * By convention each BaseUseCase implementation will return the result using a {@link rx.Subscriber}
  * that will execute its job in a background thread and will post the result in the UI thread.
  */
-public abstract class UseCase<T> {
+public abstract class BaseUseCase<T> {
 
     private final ThreadExecutor threadExecutor;
     private final PostExecutionThread postExecutionThread;
 
     private Subscription subscription = Subscriptions.empty();
 
-    protected UseCase(ThreadExecutor threadExecutor,
-                      PostExecutionThread postExecutionThread) {
+    protected BaseUseCase(ThreadExecutor threadExecutor,
+                          PostExecutionThread postExecutionThread) {
         this.threadExecutor = threadExecutor;
         this.postExecutionThread = postExecutionThread;
     }
 
     /**
-     * Builds an {@link rx.Observable} which will be used when executing the current {@link UseCase}.
+     * Builds an {@link rx.Observable} which will be used when executing the current {@link BaseUseCase}.
      */
     protected abstract Observable<T> buildUseCaseObservable();
 

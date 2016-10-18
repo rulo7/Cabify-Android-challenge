@@ -2,9 +2,10 @@ package com.racobos.presentation.ui.components.views.map;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.location.Geocoder;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,6 +17,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
+
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -37,10 +39,12 @@ import com.racobos.presentation.ui.components.views.ViewComponent;
 import com.racobos.presentation.utils.PermissionManager;
 import com.racobos.presentation.utils.ScreenSizeOperations;
 import com.txusballesteros.mara.Trait;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import lombok.Data;
 import lombok.experimental.Builder;
 
@@ -72,16 +76,14 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
         if (appCompatActivity != null) {
             ViewGroup holderView = (ViewGroup) appCompatActivity.findViewById(R.id.map_component);
             if (holderView != null) {
-                PermissionManager.requestMultiplePermissions(holderView, () -> {
-                    View view = LayoutInflater.from(appCompatActivity)
-                            .inflate(R.layout.map_component_view, holderView, false);
-                    setupViews(view);
-                    holderView.addView(view);
-                    MapFragment mapFragment =
-                            (MapFragment) appCompatActivity.getFragmentManager().findFragmentById(R.id.map_fragment);
-                    isIdleFreeForResource(true);
-                    mapFragment.getMapAsync(MapComponent.this);
-                }, Manifest.permission.ACCESS_FINE_LOCATION);
+                View view = LayoutInflater.from(appCompatActivity)
+                        .inflate(R.layout.map_component_view, holderView, false);
+                setupViews(view);
+                holderView.addView(view);
+                MapFragment mapFragment =
+                        (MapFragment) appCompatActivity.getFragmentManager().findFragmentById(R.id.map_fragment);
+                isIdleFreeForResource(true);
+                mapFragment.getMapAsync(MapComponent.this);
             }
         }
     }
@@ -182,13 +184,23 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        isIdleFreeForResource(false);
         this.googleMap = googleMap;
         if (onMapActionListener != null) {
             googleMap.setOnMapClickListener(
                     latLng -> onMapActionListener.onMapClick(latLng.latitude, latLng.longitude));
             googleMap.setOnMarkerClickListener(marker -> onMapActionListener.onMarkerClick(marker.getId()));
         }
+
+        PermissionManager.requestMultiplePermissions((ViewGroup) appCompatActivity.findViewById(android.R.id.content), () -> {
+            if (ActivityCompat.checkSelfPermission(appCompatActivity,
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                    && ActivityCompat.checkSelfPermission(appCompatActivity,
+                    Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                googleMap.setMyLocationEnabled(true);
+        }, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION);
+
+
+        isIdleFreeForResource(false);
     }
 
     /**
@@ -245,18 +257,18 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
         }
     }
 
+    //<editor-fold desc="testing methods">
     protected void isIdleFreeForResource(boolean isWaiting) {
         if (simpleIdlingResource != null) {
             simpleIdlingResource.setIdleState(isWaiting);
         }
     }
 
-    //<editor-fold desc="testintg methods">
-    @VisibleForTesting
     public void setIdlingResource(SimpleIdlingResource simpleIdlingResource) {
         this.simpleIdlingResource = simpleIdlingResource;
     }
 
+    //</editor-fold>
     public interface OnMapActionListener {
         void onMapClick(double lat, double lng);
 
@@ -264,7 +276,6 @@ public class MapComponent implements ViewComponent, OnMapReadyCallback {
 
         void onSearch(MapComponent.Address addresses);
     }
-    //</editor-fold>
 
     @Data
     @Builder

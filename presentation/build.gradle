@@ -50,8 +50,9 @@ dependencies {
 
     // Support library
     compile rootProject.ext.dependencies_sources.android_support_library
+    compile rootProject.ext.dependencies_sources.android_support_design_library
     compile rootProject.ext.dependencies_sources.android_cardview
-    compile rootProject.ext.dependencies_sources.android_recyclerview
+    //compile rootProject.ext.dependencies_sources.android_recyclerview
 
     // Javax annotations
     provided rootProject.ext.dependencies_sources.javax_annotation
@@ -100,7 +101,7 @@ dependencies {
     // Tests
     testCompile rootProject.ext.dependencies_sources_tests.junit
     testCompile rootProject.ext.dependencies_sources_tests.mockito
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    }
+
+    androidTestCompile rootProject.ext.dependencies_sources_tests.espresso_core
+    androidTestCompile rootProject.ext.dependencies_sources_tests.espresso_intents
 }

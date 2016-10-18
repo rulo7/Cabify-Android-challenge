@@ -7,12 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.widget.TextView;
 import android.widget.Toast;
-import butterknife.BindView;
-import butterknife.ButterKnife;
-import butterknife.OnClick;
+
 import com.racobos.domain.R;
 import com.racobos.domain.models.Journey;
 import com.racobos.presentation.idlingresource.SimpleIdlingResource;
@@ -20,10 +17,16 @@ import com.racobos.presentation.navigation.Navigator;
 import com.racobos.presentation.ui.bases.android.BaseActivity;
 import com.racobos.presentation.ui.bases.android.Presenter;
 import com.racobos.presentation.ui.components.views.map.MapComponent;
-import icepick.State;
+
 import java.util.Calendar;
 import java.util.List;
+
 import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import icepick.State;
 
 /**
  * Created by rulo7 on 08/10/2016.
@@ -220,7 +223,6 @@ public class RateCalculatorActivity extends BaseActivity
     }
 
     //<editor-fold desc="testing methods">
-    @VisibleForTesting
     @NonNull
     @Override
     public SimpleIdlingResource getIdlingResource() {

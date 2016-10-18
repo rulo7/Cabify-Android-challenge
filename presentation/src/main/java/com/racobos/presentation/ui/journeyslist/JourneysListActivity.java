@@ -26,7 +26,7 @@ import butterknife.ButterKnife;
 
 public class JourneysListActivity extends BaseActivity implements JourneysListPresenter.JourneysListView {
 
-    private static final String JOURNEYS_KEY = "journeys";
+    public static final String JOURNEYS_KEY = "journeys";
     @BindView(R.id.recyclerView_journeys)
     RecyclerView recyclerViewJourneys;
     @Inject

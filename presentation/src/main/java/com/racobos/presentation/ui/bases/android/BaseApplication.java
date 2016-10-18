@@ -1,6 +1,7 @@
 package com.racobos.presentation.ui.bases.android;
 
 import android.support.multidex.MultiDexApplication;
+
 import com.racobos.presentation.di.components.ApplicationComponent;
 import com.racobos.presentation.di.components.DaggerApplicationComponent;
 import com.racobos.presentation.di.modules.ApplicationModule;
