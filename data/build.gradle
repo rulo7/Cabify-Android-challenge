@@ -1,27 +1,58 @@
 apply plugin: 'com.android.library'
+apply plugin: 'me.tatarka.retrolambda'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    publishNonDefault true
+    def globalConfiguration = rootProject.extensions.getByName("ext")
+    compileSdkVersion globalConfiguration.getAt("androidCompileSdkVersion")
+    buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
 
     defaultConfig {
-        minSdkVersion 16
-        targetSdkVersion 24
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
+        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
+        versionCode globalConfiguration.getAt("androidVersionCode")
+        buildConfigField "String", "CABIFY_API_BASE_URL", '"https://test.cabify.com"'
+        buildConfigField "String", "CABIFY_API_TOKEN", '"Bearer 6o_FrppOEQ5RrCkBOEKaBM-puJleMKrRn5nW_cy7H9Y"'
     }
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
 dependencies {
-    compile project(':default_android_dependencies')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testCompile rootProject.ext.dependencies_sources_tests.junit
+
     compile project(':domain')
+
+    // Javax annotations
+    provided rootProject.ext.dependencies_sources.javax_annotation
+
+    // Javax Inject
+    compile rootProject.ext.dependencies_sources.javax_inject
+
+    // rx
+    compile rootProject.ext.dependencies_sources.rx_android_library
+    compile rootProject.ext.dependencies_sources.rx_java_library
+
+    // Lombok (important install plugin into Android Studio!)
+    compile rootProject.ext.dependencies_sources.lombok_library
+
+    // Timber
+    compile rootProject.ext.dependencies_sources.timber_library
+
+    //Retrofit
+    compile rootProject.ext.dependencies_sources.retrofit
+    compile rootProject.ext.dependencies_sources.retrofit_converter_gson
+    compile rootProject.ext.dependencies_sources.retrofit_adapter_rxjava
+    compile rootProject.ext.dependencies_sources.okhttp_loggin_interceptor
+
+    // Tests
+    testCompile rootProject.ext.dependencies_sources_tests.junit
+    testCompile rootProject.ext.dependencies_sources_tests.mockito
+
 }

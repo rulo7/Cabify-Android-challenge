@@ -1,4 +1,26 @@
 <resources>
     <string name="app_name">Cabify Android challenge</string>
     <string name="necessary_multiple_permissions">This action needs permissions</string>
+    <string name="welcome_cabify_android_challenge">Welcome to Cabify Android challenge</string>
+    <string name="undestood">Ok</string>
+    <string name="calculate_rate_route_instructions">Click anywhere on the map and indicate the position of origin and destination for your route. Once you have selected both, the rate will be displayed for your route</string>
+    <string name="choose_position">Choose position</string>
+    <string name="origin">Origin</string>
+    <string name="destination">Destination</string>
+    <string name="origin_can_not_be_empty">You have to select the origin route</string>
+    <string name="destination_can_not_be_empty">You have to select the destination route</string>
+    <string name="search">Search...</string>
+    <string name="estimate">Estimate</string>
+    <string name="starts_at">Starts at</string>
+    <string name="invalid_selected_time">The selected date and time is invalid</string>
+    <string name="default_error_message">Ups!, we are sorry, something went wrong</string>
+    <string name="set_start_time">Set the starts time</string>
+    <string name="set_moment">Set the moment</string>
+    <string name="network_error_default_message">It happended a network error, please retry later</string>
+    <string name="unavalaible_service_under_selected_places">Sorry, our service is not available between the places that you selected</string>
+    <string name="asap">As soon as posible</string>
+    <array name="position_selection">
+        <item>@string/origin</item>
+        <item>@string/destination</item>
+    </array>
 </resources>

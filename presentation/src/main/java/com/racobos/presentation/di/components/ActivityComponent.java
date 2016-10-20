@@ -3,8 +3,8 @@ package com.racobos.presentation.di.components;
 import com.racobos.presentation.di.modules.ActivityModule;
 import com.racobos.presentation.di.scopes.PerActivity;
 import com.racobos.presentation.ui.MainActivity;
+import com.racobos.presentation.ui.journeyslist.JourneysListActivity;
 import com.racobos.presentation.ui.ratecalculator.RateCalculatorActivity;
-
 import dagger.Component;
 
 /**
@@ -18,4 +18,6 @@ public interface ActivityComponent {
     void inject(MainActivity mainActivity);
 
     void inject(RateCalculatorActivity rateCalculatorActivity);
+
+    void inject(JourneysListActivity journeysListActivity);
 }

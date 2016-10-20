@@ -1,5 +1,6 @@
 package com.racobos.presentation.ui;
 
+import com.karumi.dexter.Dexter;
 import com.racobos.presentation.ui.bases.android.BaseApplication;
 
 /**
@@ -7,5 +8,15 @@ import com.racobos.presentation.ui.bases.android.BaseApplication;
  */
 
 public class CabifyAndroidChallengeApplication extends BaseApplication {
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        initDexter();
+    }
+
+    private void initDexter() {
+        Dexter.initialize(this);
+    }
+
 
 }

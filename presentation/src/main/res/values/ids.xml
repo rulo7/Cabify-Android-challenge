@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="toolbar_component" type="id" />
+    <item name="map_component" type="id" />
     <item name="progress_bar_component" type="id" />
     <item name="recycler_paginated_component" type="id" />
 </resources>

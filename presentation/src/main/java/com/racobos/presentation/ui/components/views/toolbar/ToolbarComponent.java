@@ -1,6 +1,5 @@
 package com.racobos.presentation.ui.components.views.toolbar;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -15,31 +14,31 @@ import com.txusballesteros.mara.Trait;
  */
 @Trait
 public class ToolbarComponent implements ViewComponent {
-    private Context context;
+    private AppCompatActivity appCompatActivity;
     private Toolbar toolbar;
 
-    public ToolbarComponent(Context context) {
-        this.context = context;
+    public ToolbarComponent(AppCompatActivity appCompatActivity) {
+        this.appCompatActivity = appCompatActivity;
     }
 
     @Override
     public void initialize() {
-        if (context instanceof AppCompatActivity) {
-            AppCompatActivity rootActivity = (AppCompatActivity) context;
-            ViewGroup holderView = (ViewGroup) rootActivity.findViewById(R.id.toolbar_component);
+        if (appCompatActivity != null) {
+            ViewGroup holderView = (ViewGroup) appCompatActivity.findViewById(R.id.toolbar_component);
             if (holderView != null) {
-                toolbar = (Toolbar) LayoutInflater.from(context).inflate(R.layout.toolbar_component_view, holderView, false);
+                toolbar = (Toolbar) LayoutInflater.from(appCompatActivity)
+                        .inflate(R.layout.toolbar_component_view, holderView, false);
                 holderView.addView(toolbar);
-                rootActivity.setSupportActionBar(toolbar);
+                appCompatActivity.setSupportActionBar(toolbar);
             }
         }
     }
 
     public void enableHomeAsUp() {
-        if (context instanceof AppCompatActivity) {
-            AppCompatActivity rootActivity = (AppCompatActivity) context;
-            rootActivity.getSupportActionBar().setDisplayShowTitleEnabled(true);
-            rootActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (appCompatActivity != null) {
+            appCompatActivity.getSupportActionBar().setDisplayShowTitleEnabled(true);
+            appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+
     }
 }

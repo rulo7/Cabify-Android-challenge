@@ -11,11 +11,28 @@
         android:layout_alignParentTop="true"
         tools:layout="@layout/toolbar_component_view" />
 
+    <TextView
+        android:id="@+id/submit"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:textColor="@android:color/black"
+        tools:text="@string/estimate" />
+
+    <FrameLayout
+        android:id="@id/map_component"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/submit"
+        android:layout_below="@id/toolbar_component"
+        tools:layout="@layout/map_component_view" />
+
     <FrameLayout
         android:id="@id/progress_bar_component"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         tools:layout="@layout/progress_bar_component_view" />
-
 </RelativeLayout>

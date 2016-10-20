@@ -1,6 +1,6 @@
 package com.racobos.presentation.ui.bases.android;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.racobos.presentation.di.components.ApplicationComponent;
 import com.racobos.presentation.di.components.DaggerApplicationComponent;
@@ -10,7 +10,7 @@ import com.racobos.presentation.di.modules.ApplicationModule;
  * Created by rulo7 on 07/10/2016.
  */
 
-public abstract class BaseApplication extends Application {
+public abstract class BaseApplication extends MultiDexApplication {
 
     private ApplicationComponent applicationComponent;
 
